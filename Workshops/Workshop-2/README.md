@@ -1,14 +1,13 @@
-This directory contains the full results of workshop 2 developed for the Software Engineering II course project.
-All requested artifacts were made by the Weaver team and are included in this branch.
+This directory contains all the results for Workshop 2 in the Software Engineering II course. All requested artifacts were created by the Weaver team and are included in the folder.
 
-Content included:
-CRC cards
-Final models of the system
-Business process diagram
-System architecture diagram
-Diagram of classes
-Relational database model
+Contents:
+* CRC Cards
+* Final System Models
+* Business Process Diagram
+* System Architecture Diagram
+* Class Diagram
+* Relational Database Model
 
-In the folder is the consolidated PDF file with the completed workshop along with the exported images of each diagram.
+Also included is a PDF with the completed workshop and the exported images of each diagram.
 
-This workshop is now fully completed and corresponds to the official delivery required for Workshop 2.
+The workshop has been completed and meets the official requirements for the delivery of Workshop 2.
