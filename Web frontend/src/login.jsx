@@ -1,23 +1,25 @@
-import React from "react";
+import React, { useRef } from "react";
 import logoWeaver from "./assets/WEAVER_logo.png";
 import "./login.css";
 
 function Login() {
+    const passwordRef = useRef(null);
+
+    const handleEmailKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault(); // evita que el form se envíe
+            if (passwordRef.current) {
+                passwordRef.current.focus(); // pasa el foco a la contraseña
+            }
+        }
+    };
+
     return (
         <div className="login-page min-h-screen flex items-center justify-center px-4">
-            <div className="max-w-md w-full login-card rounded-2xl border border-slate-800/80 bg-slate-950/80 shadow-2xl p-8 space-y-8">
+            <div className="max-w-md w-full login-card rounded-2xl border border-slate-800/80 bg-slate-950/80 shadow-2xl p-6 space-y-6">
                 {/* Logo / título */}
                 <div className="text-center space-y-3">
-                    <img
-                        src={logoWeaver}
-                        className="login-logo"
-                        alt="Logo Weaver"
-                        draggable="false"
-                    />
-
-                    <div className="inline-flex items-center justify-center rounded-full bg-slate-900/80 px-4 py-1 text-xs font-semibold text-violet-300 border border-violet-500/40 shadow-[0_0_25px_rgba(139,92,246,0.4)]">
-                        WEAVER
-                    </div>
+                    <img src={logoWeaver} className="login-logo" alt="Logo Weaver" draggable="false"/>
 
                     <h1 className="text-xl font-semibold text-slate-50 tracking-[0.2em] uppercase">
                         Inicia sesión
@@ -42,6 +44,7 @@ function Login() {
                             type="email"
                             placeholder="tejedor@hive.com"
                             className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 shadow-inner"
+                            onKeyDown={handleEmailKeyDown}
                         />
                     </div>
 
@@ -55,9 +58,9 @@ function Login() {
                             </label>
                             <button
                                 type="button"
-                                className="text-xs text-violet-300 hover:text-violet-200"
+                                className="text-xs text-violet-300 hover:text-violet-200 cursor-pointer"
                             >
-                                ¿Olvidaste tu hilo?
+                                ¿Olvidaste tu contraseña?
                             </button>
                         </div>
                         <input
@@ -65,6 +68,7 @@ function Login() {
                             type="password"
                             placeholder="••••••••"
                             className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 shadow-inner"
+                            ref={passwordRef}
                         />
                     </div>
 
@@ -72,7 +76,7 @@ function Login() {
                         <label className="inline-flex items-center gap-2 cursor-pointer">
                             <input
                                 type="checkbox"
-                                className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-900 text-violet-500 focus:ring-violet-500"
+                                className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-900 text-violet-500 focus:ring-violet-500 cursor-pointer"
                             />
                             <span>Mantener mi hilo conectado</span>
                         </label>
@@ -80,7 +84,7 @@ function Login() {
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-violet-500 hover:bg-violet-400 active:bg-violet-600 transition-colors text-slate-950 font-semibold py-2.5 text-sm shadow-[0_0_25px_rgba(139,92,246,0.6)]"
+                        className="w-full rounded-lg bg-violet-500 hover:bg-violet-400 cursor-pointer active:bg-violet-600 transition-colors text-slate-950 font-semibold py-2.5 text-sm shadow-[0_0_25px_rgba(139,92,246,0.6)]"
                     >
                         Entrar al telar
                     </button>
