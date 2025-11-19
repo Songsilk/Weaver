@@ -98,7 +98,7 @@ function Login() {
                 <p className="text-center text-xs text-slate-400">
                     Are you not yet part of the web?{" "}
                     <a
-                        href="#"
+                        href="/register"
                         className="font-medium text-violet-300 hover:text-violet-200"
                         onClick={() => navigate("/Not_ready")}
                     >

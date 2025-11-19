@@ -16,4 +16,8 @@ export const router = createBrowserRouter([
     path: "/Not_ready",
     element: <NotReady />,
   },
+  {
+    path: "/register",     // <-- Nueva ruta
+    element: <Register />, // <-- Página que quieres mostrar
+  },
 ]);
