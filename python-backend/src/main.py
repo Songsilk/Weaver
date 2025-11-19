@@ -10,4 +10,4 @@ async def get_db():
 
 @app.get("/")
 async def root():
-    return {"message": "FastAPI + async SQLAlchemy + asyncmy + MySQL works!"}
+    return {"message": "FastAPI + async SQLAlchemy + asyncmy + MySQL works fine!"}
