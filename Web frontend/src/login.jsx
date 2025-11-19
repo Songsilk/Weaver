@@ -1,8 +1,10 @@
 import React, { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import logoWeaver from "./assets/WEAVER_logo.png";
 import "./login.css";
 
 function Login() {
+    const navigate = useNavigate();
     const passwordRef = useRef(null);
 
     const handleEmailKeyDown = (e) => {
@@ -59,6 +61,7 @@ function Login() {
                             <button
                                 type="button"
                                 className="text-xs text-violet-300 hover:text-violet-200 cursor-pointer"
+                                onClick={() => navigate("/Not_ready")}
                             >
                                 Forgot your password?
                             </button>
@@ -85,6 +88,7 @@ function Login() {
                     <button
                         type="submit"
                         className="w-full rounded-lg bg-violet-500 hover:bg-violet-400 cursor-pointer active:bg-violet-600 transition-colors text-slate-950 font-semibold py-2.5 text-sm shadow-[0_0_25px_rgba(139,92,246,0.6)]"
+                        onClick={() => navigate("/")}
                     >
                         Enter to Weaver
                     </button>
@@ -96,6 +100,7 @@ function Login() {
                     <a
                         href="/register"
                         className="font-medium text-violet-300 hover:text-violet-200"
+                        onClick={() => navigate("/Not_ready")}
                     >
                         Create account
                     </a>
