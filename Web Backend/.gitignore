@@ -1,0 +1,13 @@
+# Python cache / bytecode
+__pycache__/
+*.py[cod]
+
+# Virtual environment (if you use one locally)
+.venv/
+
+# Docker volumes (persistent DB data)
+db_data/
+
+# Environment files (secrets)
+.env
+.vscode/
