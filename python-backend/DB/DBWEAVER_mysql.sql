@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS users_DB;
 USE users_DB;
 
 CREATE TABLE IF NOT EXISTS `User` (
-  `user_id` INT,
+  `user_id` INT AUTO_INCREMENT,
   `email` VARCHAR(255) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `status` VARCHAR(20) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `User` (
 );
 
 CREATE TABLE IF NOT EXISTS `Labels` (
-  `label_id` INT,
+  `label_id` INT AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `tag_name` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`label_id`),
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `Labels` (
 );
 
 CREATE TABLE IF NOT EXISTS `ContactList` (
-  `contact_id` INT,
+  `contact_id` INT AUTO_INCREMENT,
   `owner_user_id` INT NOT NULL,
   `contact_user_id` INT NOT NULL,
   `added_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `LabelApplied` (
 
 
 CREATE TABLE IF NOT EXISTS `Note` (
-  `note_id` INT,
+  `note_id` INT AUTO_INCREMENT,
   `contact_id` INT NOT NULL,
   `content` TEXT NOT NULL,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `Note` (
 );
 
 CREATE TABLE IF NOT EXISTS `Admin` (
-  `admin_id` INT,
+  `admin_id` INT AUTO_INCREMENT,
   `email` VARCHAR(255) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `Admin` (
 );
 
 CREATE TABLE IF NOT EXISTS `Page` (
-  `page_id` INT,
+  `page_id` INT AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `title` VARCHAR(50),
   `config_json` TEXT,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `Page` (
 );
 
 CREATE TABLE IF NOT EXISTS `Component` (
-  `component_id` INT,
+  `component_id` INT AUTO_INCREMENT,
   `page_id` INT NOT NULL,
   `type` VARCHAR(20),
   `data_json` TEXT,
@@ -87,5 +87,3 @@ CREATE TABLE IF NOT EXISTS `Component` (
   FOREIGN KEY (`page_id`)
       REFERENCES `Page`(`page_id`)
 );
-
-

@@ -14,3 +14,10 @@ docker compose down
 
 Cerrado eliminando la información de la DB
 docker compose down -v
+<<<<<<< HEAD
+
+docker exec -it mysql-dev bash
+mysql -u root -p
+rootpassword
+
+SOURCE /docker-entrypoint-initdb.d/DBWEAVER_mysql.sql
