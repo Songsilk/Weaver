@@ -94,7 +94,7 @@ function Login() {
                 <p className="text-center text-xs text-slate-400">
                     ¿Aún no formas parte del tejido?{" "}
                     <a
-                        href="#"
+                        href="/register"
                         className="font-medium text-violet-300 hover:text-violet-200"
                     >
                         Crear cuenta
