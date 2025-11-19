@@ -1,8 +1,9 @@
 # INSTALAR DOCKER y tener internet
 
 ## Crear y ejecutar la build
-docker compose build ## crea la proyecto para hacer pruebas con la DB
-docker compose up ## Lanza el proyecto
+docker compose build **crea la proyecto para hacer pruebas con la DB**
+
+docker compose up **Lanza el proyecto**
 
 La dirección de ejecución es localhost:8000
 
@@ -13,6 +14,7 @@ docker compose down
 
 Cerrado eliminando la información de la DB
 docker compose down -v
+<<<<<<< HEAD
 
 docker exec -it mysql-dev bash
 mysql -u root -p

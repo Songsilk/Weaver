@@ -87,5 +87,3 @@ CREATE TABLE IF NOT EXISTS `Component` (
   FOREIGN KEY (`page_id`)
       REFERENCES `Page`(`page_id`)
 );
-
-
