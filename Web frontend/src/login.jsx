@@ -22,11 +22,11 @@ function Login() {
                     <img src={logoWeaver} className="login-logo" alt="Logo Weaver" draggable="false"/>
 
                     <h1 className="text-xl font-semibold text-slate-50 tracking-[0.2em] uppercase">
-                        Inicia sesión
+                        Log in
                     </h1>
 
                     <p className="text-sm text-slate-400">
-                        Entra al telar donde tus contactos se entrelazan como hilos.
+                        Enter the web where your contacts intertwine like threads.
                     </p>
                 </div>
 
@@ -37,12 +37,12 @@ function Login() {
                             htmlFor="email"
                             className="block text-sm font-medium text-slate-200"
                         >
-                            Correo electrónico
+                            Email
                         </label>
                         <input
                             id="email"
                             type="email"
-                            placeholder="tejedor@hive.com"
+                            placeholder="trobbio@weaver.com"
                             className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 shadow-inner"
                             onKeyDown={handleEmailKeyDown}
                         />
@@ -54,13 +54,13 @@ function Login() {
                                 htmlFor="password"
                                 className="block text-sm font-medium text-slate-200"
                             >
-                                Contraseña
+                                Password
                             </label>
                             <button
                                 type="button"
                                 className="text-xs text-violet-300 hover:text-violet-200 cursor-pointer"
                             >
-                                ¿Olvidaste tu contraseña?
+                                Forgot your password?
                             </button>
                         </div>
                         <input
@@ -78,7 +78,7 @@ function Login() {
                                 type="checkbox"
                                 className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-900 text-violet-500 focus:ring-violet-500 cursor-pointer"
                             />
-                            <span>Mantener mi hilo conectado</span>
+                            <span>Keep my thread connected</span>
                         </label>
                     </div>
 
@@ -86,18 +86,18 @@ function Login() {
                         type="submit"
                         className="w-full rounded-lg bg-violet-500 hover:bg-violet-400 cursor-pointer active:bg-violet-600 transition-colors text-slate-950 font-semibold py-2.5 text-sm shadow-[0_0_25px_rgba(139,92,246,0.6)]"
                     >
-                        Entrar al telar
+                        Enter to Weaver
                     </button>
                 </form>
 
                 {/* Enlace a registro */}
                 <p className="text-center text-xs text-slate-400">
-                    ¿Aún no formas parte del tejido?{" "}
+                    Are you not yet part of the web?{" "}
                     <a
                         href="/register"
                         className="font-medium text-violet-300 hover:text-violet-200"
                     >
-                        Crear cuenta
+                        Create account
                     </a>
                 </p>
             </div>
