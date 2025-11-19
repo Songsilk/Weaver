@@ -1,0 +1,157 @@
+/* Fondo con estilo coherente con login/home */
+.not-ready-page {
+  position: relative;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(168, 85, 247, 0.45), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.32), transparent 55%),
+    #020617;
+  overflow: hidden;
+}
+
+.not-ready-page::before,
+.not-ready-page::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(148, 163, 184, 0.24), transparent 55%),
+    repeating-radial-gradient(
+      circle at 20% 0%,
+      transparent 0,
+      transparent 18px,
+      rgba(148, 163, 184, 0.14) 19px,
+      rgba(148, 163, 184, 0.14) 20px
+    );
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.not-ready-page::after {
+  transform: rotate(180deg);
+  opacity: 0.3;
+}
+
+.not-ready-overlay {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+}
+
+/* Card principal */
+.not-ready-card {
+  max-width: 980px;
+  width: 100%;
+  border-radius: 1.75rem;
+  background: radial-gradient(circle at top left, rgba(148, 163, 184, 0.18), rgba(15, 23, 42, 0.98));
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.9),
+    0 0 40px rgba(129, 140, 248, 0.4);
+  backdrop-filter: blur(18px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 2.5rem;
+  padding: 2.5rem 2.75rem;
+  align-items: center;
+}
+
+/* Texto */
+.not-ready-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.not-ready-title {
+  font-size: clamp(1.9rem, 3vw, 2.3rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.not-ready-highlight {
+  color: #f9a8d4;
+  text-shadow: 0 0 18px rgba(244, 114, 182, 0.9);
+}
+
+.not-ready-text {
+  font-size: 0.98rem;
+  color: #e5e7eb;
+  max-width: 32rem;
+}
+
+/* Botón para volver a Home */
+.not-ready-button {
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  padding: 0.7rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  color: #020617;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow:
+    0 0 20px rgba(236, 72, 153, 0.7),
+    0 0 30px rgba(129, 140, 248, 0.7);
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+}
+
+.not-ready-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 26px rgba(236, 72, 153, 0.9),
+    0 0 40px rgba(129, 140, 248, 0.8);
+}
+
+/* Imagen de Hornet */
+.not-ready-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.not-ready-image {
+  max-width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 26px rgba(248, 250, 252, 0.9));
+  border-radius: 50px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .not-ready-card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 2rem 1.75rem;
+  }
+
+  .not-ready-image-wrapper {
+    order: -1;
+  }
+
+  .not-ready-image {
+    max-height: 260px;
+  }
+}
+
+@media (max-width: 640px) {
+  .not-ready-card {
+    padding: 1.8rem 1.4rem;
+  }
+
+  .not-ready-title {
+    font-size: 1.6rem;
+  }
+
+  .not-ready-text {
+    font-size: 0.92rem;
+  }
+}
