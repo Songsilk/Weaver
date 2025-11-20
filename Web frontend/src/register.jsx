@@ -60,7 +60,7 @@ export default function Register() {
   };
 
   return (
-    <div className="login-page min-h-screen flex items-center justify-center px-4">
+    <div className="login-page min-h-screen flex items-center justify-center px-4 py-7">
       <div className="max-w-md w-full login-card rounded-2xl border border-slate-800/80 bg-slate-950/80 shadow-2xl p-6 space-y-6">
         {/* Logo / título */}
         <div className="text-center space-y-3">
@@ -188,7 +188,7 @@ export default function Register() {
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`w-full rounded-lg ${isFormValid ? "bg-violet-500 hover:bg-violet-400 active:bg-violet-600 shadow-[0_0_25px_rgba(139,92,246,0.6)] text-slate-950 font-semibold" : "bg-slate-800 text-slate-500 cursor-not-allowed"} transition-colors py-2.5 text-sm`}
+            className={`w-full rounded-lg ${isFormValid ? "bg-violet-500 hover:bg-violet-400 active:bg-violet-600 cursor-pointer shadow-[0_0_25px_rgba(139,92,246,0.6)] text-slate-950 font-semibold" : "bg-slate-800 text-slate-500 cursor-not-allowed"} transition-colors py-2.5 text-sm`}
           >
             Create account
           </button>

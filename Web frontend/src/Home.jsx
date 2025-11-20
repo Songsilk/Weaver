@@ -144,7 +144,7 @@ function Home() {
             </button>
             <button
               className="home-auth-button home-auth-secondary"
-              onClick={() => navigate("/Not_ready")}
+              onClick={() => navigate("/Register")}
             >
               SIGN UP
             </button>
@@ -304,7 +304,14 @@ function Home() {
               <div className="home-join-actions">
                 <button
                   className="home-primary-button home-join-button"
-                  onClick={() => navigate("/Not_ready")}
+                  onClick={() => {
+                    window.scrollTo({
+                      top: 0,
+                      left: 0,
+                      behavior: "instant", // o "smooth" si quieres animación
+                    });
+                    navigate("/Register");
+                  }}
                 >
                   Start knitting
                 </button>
