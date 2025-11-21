@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient
 from httpx import ASGITransport
 
-from core.main import app
+from core.main2 import app
 from core.db import Base, get_db
 from core.models import User   # if needed
 

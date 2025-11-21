@@ -7,16 +7,18 @@ async def test_create_user(client):
         "email": "test@example.com",
         "password": "secret",
         "username": "tester",
+        "status": "active",   
         "avatar_url": None
     }
+    
 
     # Act
-    response = await client.post("/create", json=payload)
+    response = await client.post("/user", json=payload)
 
     # Assert
     assert response.status_code == 200
     data = response.json()
-
+    print("AAAAAAAAAAAAAAAAAA", data)
     assert data["message"] == "user created"
 
 
@@ -26,10 +28,11 @@ async def test_delete_user(client):
     payload = {
         "email": "to_delete@example.com",
         "password": "secret",
-        "username": "deluser",
+        "username": "deltester",
+        "status": "active",   
         "avatar_url": None
     }
-    r1 = await client.post("/create", json=payload)
+    r1 = await client.post("/user", json=payload)
     assert r1.status_code == 200
     print(r1)
     user_id = 1
