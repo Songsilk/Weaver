@@ -26,8 +26,4 @@ export const router = createBrowserRouter([
     path: "/profiles",
     element: <Profiles />,
   },
-  {
-  path: "/profiles",
-  element: <Profiles />
-  },
 ]);

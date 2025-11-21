@@ -460,6 +460,7 @@
     align-items: center;
     justify-content: center;
     min-height: 220px;
+    max-height: calc(100vh - 100px - 1.75rem);
     padding: 2rem;
     background-image:
         radial-gradient(circle at 0% 0%, rgba(248, 250, 252, 0.2), transparent 65%),

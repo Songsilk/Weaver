@@ -3,6 +3,13 @@ import logoWeaver from "./assets/WEAVER_logo.png";
 import "./login.css";
 
 export default function Register() {
+
+  const API_BASE_URL = "http://localhost:3000"; // url de tu backend
+  const REGISTER_ENDPOINT = "/api/users/register"; // api de registro de un nuevo usuario
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
   const usernameRef = useRef(null);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
@@ -46,7 +53,7 @@ export default function Register() {
 
   const isFormValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmValid;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid) {
       // marcar todo como touched para mostrar errores
@@ -54,9 +61,47 @@ export default function Register() {
       return;
     }
 
-    // Mock: aquí iría la llamada al backend
-    alert("Cuenta creada (mock). Próximo: integrar con FastAPI cuando esté listo.");
-    // opcional: redirigir / limpiar form / mostrar modal, etc.
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API_BASE_URL}${REGISTER_ENDPOINT}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        // ⚠️ CLAVES DEL BODY A LO QUE ESPERE TU API
+        body: JSON.stringify({
+          "email": form.email,
+          "username": form.username,
+          "password": form.password,
+          "status": "active",
+          "avatar_url": ""
+        }),
+      });
+
+      if (!res.ok) {
+        // Intenta leer el mensaje de error que devuelva la API
+        let message = "No se pudo crear la cuenta.";
+        try {
+          const data = await res.json();
+          if (data?.message) message = data.message;
+        } catch {
+          // si la respuesta no es JSON, dejamos el mensaje genérico
+        }
+        throw new Error(message);
+      }
+
+      setSuccessMsg("Cuenta creada correctamente. Redirigiendo a login...");
+      // Espera un momento y ve al login
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (err) {
+      setErrorMsg(err.message || "Ocurrió un error al crear la cuenta.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
