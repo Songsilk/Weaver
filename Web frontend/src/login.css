@@ -1,0 +1,107 @@
+/* Fondo general con vibra de Silksong: oscuro + púrpura + “neblina” (ahora más fuerte) */
+.login-page {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(168, 85, 247, 0.40), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.32), transparent 55%),
+        #020617; /* slate-950 */
+}
+
+/* “Hilos” / telarañas sutiles en el fondo (un poco más visibles) */
+.login-page::before,
+.login-page::after {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background-image:
+        radial-gradient(circle at 20% 0%, rgba(148, 163, 184, 0.20), transparent 55%),
+        repeating-radial-gradient(
+            circle at 20% 0%,
+            transparent 0,
+            transparent 18px,
+            rgba(148, 163, 184, 0.12) 19px,
+            rgba(148, 163, 184, 0.12) 20px
+        );
+    mix-blend-mode: screen;
+    opacity: 0.38;   /* antes ~0.22 */
+    pointer-events: none;
+}
+
+.login-page::after {
+    transform: rotate(180deg);
+    opacity: 0.32;   /* antes ~0.18 */
+}
+
+
+/* Tarjeta con blur y borde “mágico” */
+.login-card {
+    backdrop-filter: blur(18px);
+    box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.9),
+        0 0 32px rgba(129, 140, 248, 0.25);
+    position: relative;
+    overflow: hidden;
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+/* Hilo brillante en el borde superior de la card */
+.login-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -30%;
+    width: 160%;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(236, 72, 153, 0.7),
+        rgba(129, 140, 248, 0.9),
+        transparent
+    );
+    opacity: 0.8;
+}
+
+/* Sutil flotación al hacer hover */
+.login-card:hover {
+    transform: translateY(-2px);
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out;
+    box-shadow:
+        0 24px 60px rgba(15, 23, 42, 1),
+        0 0 40px rgba(129, 140, 248, 0.45);
+}
+
+
+
+/* Logo centrado y con halo tipo insignia de tejedoras */
+.login-logo {
+    display: block;
+    height: auto;
+    width: 20%;
+    margin: 0 auto 10px auto;
+    filter: drop-shadow(0 0 18px rgba(148, 163, 184, 0.7));
+    animation: logo-breath 4s ease-in-out infinite;
+}
+
+@media (max-height: 520px) {
+  .login-logo {
+    display: none;
+  }
+}
+
+/* Animación suave de “respiración” del logo */
+@keyframes logo-breath {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.95;
+    }
+    50% {
+        transform: translateY(-2px) scale(1.03);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.95;
+    }
+}
