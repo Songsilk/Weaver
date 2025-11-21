@@ -192,8 +192,4 @@ export default function ProfileEditor() {
       </div>
     </div>
   );
-<<<<<<< Updated upstream
 }
-=======
-}
->>>>>>> Stashed changes
