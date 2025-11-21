@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: .
+    container_name: fastapi-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app       # mounts source folder for live reload
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USER: root
+      DATABASE_PASSWORD: rootp
+      DATABASE_NAME: users_DB
+      PYTHONPATH: /app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.4
+    container_name: mysql-dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootp
+      MYSQL_DATABASE: users_DB
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./DB:/docker-entrypoint-initdb.d:ro  # optional initial DB
+volumes:
+  db_data:

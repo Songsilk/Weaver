@@ -1,0 +1,20 @@
+##Base for project exec
+fastapi
+uvicorn[standard]
+
+##SQL queries creation
+sqlalchemy[asyncio]
+asyncmy
+
+##Enable encrypted communication with DB
+cryptography
+
+##Testing
+httpx
+pytest
+pytest-asyncio
+aiosqlite
+
+##Email queries apparently
+pydantic[email]
+email-validator
