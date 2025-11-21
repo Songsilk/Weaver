@@ -1,18 +1,21 @@
-from domain.users.value_objects import Email, Username, AvatarURL, Biography
-from domain.users.entities import User
+from domain.user.value_objects import Email, Username, AvatarURL, password, status
+from domain.user.entities import User
 
-async def create_user_service(user_repo, email, username, avatar="", bio=""):
+async def create_user_service(user_repo, email, passw, statuss, username, avatar=""):
     email_vo = Email(email)
     username_vo = Username(username)
     avatar_vo = AvatarURL(avatar)
-    bio_vo = Biography(bio)
+    password_vo = password(passw)
+    status_vo = status(statuss)
+
 
     user = User(
         user_id=0,   # repo assigns real ID
         email=email_vo,
+        password=password_vo,
+        status=status_vo,
         username=username_vo,
         avatar=avatar_vo,
-        biography=bio_vo,
         card=None,
         contacts=[]
     )

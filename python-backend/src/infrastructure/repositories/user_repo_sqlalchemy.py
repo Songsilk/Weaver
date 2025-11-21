@@ -1,6 +1,7 @@
-from domain.users.entities import User
-from domain.users.value_objects import Email, Username, AvatarURL, Biography
-from domain.users.repositories import UserRepository
+from sqlalchemy import select
+from domain.user.entities import User
+from domain.user.value_objects import Email, Username, AvatarURL
+from domain.user.repositories import UserRepository
 from infrastructure.db.models.user_model import UserModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,7 +16,24 @@ class UserRepositorySQLAlchemy(UserRepository):
             email=Email(db_user.email),
             username=Username(db_user.username),
             avatar=AvatarURL(db_user.avatar_url),
-            biography=Biography(db_user.biography),
+            card=None,
+            contacts=[]
+        )
+
+
+    async def get_by_email(self, email: str) -> User:
+        stmt = select(UserModel).where(UserModel.email == email)
+        result = await self.session.execute(stmt)
+        db_user = result.scalar_one_or_none()
+        
+        if not db_user:
+            return None
+        
+        return User(
+            user_id=db_user.user_id,
+            email=Email(db_user.email),
+            username=Username(db_user.username),
+            avatar=AvatarURL(db_user.avatar_url),
             card=None,
             contacts=[]
         )
@@ -25,7 +43,6 @@ class UserRepositorySQLAlchemy(UserRepository):
             email=user.email.value,
             username=user.username.value,
             avatar_url=user.avatar.value,
-            biography=user.biography.text
         )
         self.session.add(db_user)
         await self.session.commit()

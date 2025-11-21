@@ -15,12 +15,15 @@ class Username:
         if len(self.value) < 3:
             raise ValueError("Username must be at least 3 chars")
 
+@dataclass(frozen=True)
+class password:
+    value: str
 
 @dataclass(frozen=True)
-class AvatarURL:
+class status:
     value: str
 
 
 @dataclass(frozen=True)
-class Biography:
-    text: str
+class AvatarURL:
+    value: str
