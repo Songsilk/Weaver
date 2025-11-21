@@ -1,19 +1,3 @@
-<<<<<<< Updated upstream
-/*
-ProfileEditor.jsx
-React + Vite component (single-file) for the "Profile Customization" editor described by the user.
-
-IMPORTANT: this file references the uploaded assets using the original upload path
-'/mnt/data/weaver frontend.zip' so your build/CI will need to map/transform that path to the actual files inside the zip. The developer environment will convert that path into a usable URL.
-
-Dependencies: react, react-dom, tailwindcss, react-rnd
-Install: npm install react-rnd
-
-Drop this file under src/components/ and import it in your App.jsx to preview.
-*/
-
-=======
->>>>>>> Stashed changes
 import React, { useState } from 'react';
 import { Rnd } from 'react-rnd';
 
