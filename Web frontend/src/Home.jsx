@@ -176,6 +176,12 @@ function Home() {
                 >
                   See how it works
                 </button>
+                <button
+                  className="home-secondary-button"
+                  onClick={() => navigate("/profiles")}
+                >
+                  Profiles
+                </button>
               </div>
             </div>
 
