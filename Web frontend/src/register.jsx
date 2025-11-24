@@ -4,8 +4,8 @@ import "./login.css";
 
 export default function Register() {
 
-  const API_BASE_URL = "http://localhost:3000"; // url de tu backend
-  const REGISTER_ENDPOINT = "/api/users/register"; // api de registro de un nuevo usuario
+  const API_BASE_URL = "http://127.0.0.1:8000"; // url de tu backend
+  const REGISTER_ENDPOINT = "/user/"; // api de registro de un nuevo usuario
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
