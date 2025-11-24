@@ -1,3 +1,4 @@
+#Deprectated
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import insert, delete, select
 from sqlalchemy.ext.asyncio import AsyncSession

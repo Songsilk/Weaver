@@ -41,7 +41,9 @@ class UserRepositorySQLAlchemy(UserRepository):
     async def save(self, user: User):
         db_user = UserModel(
             email=user.email.value,
+            password=user.password.value,
             username=user.username.value,
+            status=user.status.value,
             avatar_url=user.avatar.value,
         )
         self.session.add(db_user)

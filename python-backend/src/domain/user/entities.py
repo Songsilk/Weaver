@@ -10,4 +10,5 @@ class User:
     email: Email
     password: str 
     username: Username
+    status: str
     avatar: AvatarURL
