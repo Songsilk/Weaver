@@ -1,12 +1,12 @@
 from domain.user.value_objects import Email, Username, AvatarURL, password, status
 from domain.user.entities import User
 
-async def create_user_service(user_repo, email, passw, statuss, username, avatar=""):
+async def create_user_service(user_repo, email, passw, username, statuss, avatar=""):
     email_vo = Email(email)
     username_vo = Username(username)
-    avatar_vo = AvatarURL(avatar)
     password_vo = password(passw)
     status_vo = status(statuss)
+    avatar_vo = AvatarURL(avatar)
 
 
     user = User(
@@ -15,13 +15,11 @@ async def create_user_service(user_repo, email, passw, statuss, username, avatar
         password=password_vo,
         status=status_vo,
         username=username_vo,
-        avatar=avatar_vo,
-        card=None,
-        contacts=[]
+        avatar=avatar_vo
     )
 
     await user_repo.save(user)
-    return user
+    return user.user_id
 
 
 async def delete_user_service(user_repo, user_id: int):

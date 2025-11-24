@@ -28,8 +28,8 @@ async def test_delete_user(client):
     # First, create a user to delete
     payload = {
         "email": "to_delete@example.com",
-        "username": "deltester",
         "password": "secret",
+        "username": "deltester",
         "status": "active",   
         "avatar_url": None
     }
