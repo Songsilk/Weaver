@@ -90,5 +90,7 @@ docker compose down -v
 docker exec -it mysql-dev bash  
 mysql -u root -p  
 
-contraseña: rootp  
-se cambia en deployment
+contraseña: rootp *se cambia en deployment*  
+  
+use users_DB;  
+show tables;  
