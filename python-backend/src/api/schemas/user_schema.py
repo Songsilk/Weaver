@@ -9,3 +9,11 @@ class UserCreate(BaseModel):
 
 class UserResponse(BaseModel):
     user_id: int
+    email: EmailStr
+    username: str
+    status: str
+    avatar_url: str | None = None
+
+class UserWithToken(BaseModel):
+    user: UserResponse
+    token: str

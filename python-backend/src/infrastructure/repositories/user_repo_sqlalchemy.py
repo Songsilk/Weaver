@@ -14,10 +14,10 @@ class UserRepositorySQLAlchemy(UserRepository):
         return User(
             user_id=db_user.user_id,
             email=Email(db_user.email),
+            password=db_user.password,
             username=Username(db_user.username),
-            avatar=AvatarURL(db_user.avatar_url),
-            card=None,
-            contacts=[]
+            status=db_user.status,
+            avatar=AvatarURL(db_user.avatar_url)
         )
 
 
@@ -32,10 +32,10 @@ class UserRepositorySQLAlchemy(UserRepository):
         return User(
             user_id=db_user.user_id,
             email=Email(db_user.email),
+            password=db_user.password,
             username=Username(db_user.username),
-            avatar=AvatarURL(db_user.avatar_url),
-            card=None,
-            contacts=[]
+            status=db_user.status,
+            avatar=AvatarURL(db_user.avatar_url)
         )
 
     async def save(self, user: User):

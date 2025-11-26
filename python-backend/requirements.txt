@@ -1,20 +1,15 @@
-##Base for project exec
 fastapi
-uvicorn[standard]
-
-##SQL queries creation
-sqlalchemy[asyncio]
+uvicorn
+sqlalchemy
 asyncmy
-
-##Enable encrypted communication with DB
-cryptography
-
-##Testing
-httpx
+aiosqlite
 pytest
 pytest-asyncio
-aiosqlite
-
-##Email queries apparently
+pydantic
+pydantic-settings
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+httpx
 pydantic[email]
 email-validator

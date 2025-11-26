@@ -3,6 +3,7 @@
 *.py[cod]
 # Virtual environment (if you use one locally)
 .venv/
+venv/
 
 # Docker volumes (persistent DB data)
 db_data/
