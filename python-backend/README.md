@@ -64,29 +64,31 @@ Este proyecto sigue los principios de **Clean Architecture** (Arquitectura Limpi
 *   **Evolución**: Si en el futuro se decide cambiar MySQL por PostgreSQL o FastAPI por otro framework, la lógica central del negocio permanecerá intacta.
 
 
-# Requisitos de ejecución
-- INSTALAR DOCKER
-- Tener internet
+# Requisitos de ejecución  
+- INSTALAR DOCKER  
+- Tener internet  
 
-## Crear y ejecutar la build
-**crea la build del proyecto**
-docker compose build
+## Crear y ejecutar la build  
+**crea la build del proyecto**  
+docker compose build  
 
+  
+**Lanza el proyecto**  
+docker compose up  
+  
+**La dirección de ejecución es localhost:8000**  
+  
 
-**Lanza el proyecto**
-docker compose up
+## Cerrar el entorno de desarrollo  
+**Cerrado normal**  
+docker compose down  
 
-**La dirección de ejecución es localhost:8000**
+**Cerrado eliminando la información de la DB**  
+docker compose down -v  
+ 
+**entrar al container de la DB**  
+docker exec -it mysql-dev bash  
+mysql -u root -p  
 
-
-## Cerrar el entorno de desarrollo
-**Cerrado normal**
-docker compose down
-
-**Cerrado eliminando la información de la DB**
-docker compose down -v
-
-**entrar al container de la DB**
-docker exec -it mysql-dev bash
-mysql -u root -p
-rootp
+contraseña: rootp  
+se cambia en deployment

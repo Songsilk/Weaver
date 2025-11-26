@@ -16,11 +16,11 @@ class Username:
             raise ValueError("Username must be at least 3 chars")
 
 @dataclass(frozen=True)
-class password:
+class Password:
     value: str
 
 @dataclass(frozen=True)
-class status:
+class Status:
     value: str
 
 

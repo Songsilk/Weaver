@@ -1,24 +1,25 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import jwt
+from domain.user.value_objects import Password
 import bcrypt
 
 SECRET_KEY = "YOUR_SUPER_SECRET_KEY" # In production, use env var
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-def hash_password(password: str) -> str:
+def hash_password(password: Password) -> Password:
     """Hash a password using bcrypt with automatic salting."""
-    # Convert string to bytes, hash it, and return as string
-    password_bytes = password.encode('utf-8')
+    # Convert string to bytes, hash it, and return as Password value object
+    password_bytes = password.value.encode('utf-8')
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password_bytes, salt)
-    return hashed.decode('utf-8')
+    return Password(hashed.decode('utf-8'))
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
+def verify_password(plain_password: str, hashed_password: Password) -> bool:
     """Verify a password against its hash."""
     password_bytes = plain_password.encode('utf-8')
-    hashed_bytes = hashed_password.encode('utf-8')
+    hashed_bytes = hashed_password.value.encode('utf-8')
     return bcrypt.checkpw(password_bytes, hashed_bytes)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

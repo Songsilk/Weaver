@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from domain.user.entities import User
-from domain.user.value_objects import Email, Username, AvatarURL
+from domain.user.value_objects import Email, Username, AvatarURL, Status, Password
 from domain.user.repositories import UserRepository
 from infrastructure.db.models.user_model import UserModel
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,9 +14,9 @@ class UserRepositorySQLAlchemy(UserRepository):
         return User(
             user_id=db_user.user_id,
             email=Email(db_user.email),
-            password=db_user.password,
+            password=Password(db_user.password),
             username=Username(db_user.username),
-            status=db_user.status,
+            status=Status(db_user.status),
             avatar=AvatarURL(db_user.avatar_url)
         )
 
@@ -32,18 +32,18 @@ class UserRepositorySQLAlchemy(UserRepository):
         return User(
             user_id=db_user.user_id,
             email=Email(db_user.email),
-            password=db_user.password,
+            password=Password(db_user.password),
             username=Username(db_user.username),
-            status=db_user.status,
+            status=Status(db_user.status),
             avatar=AvatarURL(db_user.avatar_url)
         )
 
     async def save(self, user: User):
         db_user = UserModel(
             email=user.email.value,
-            password=user.password,  # password is a plain string in User entity
+            password=user.password.value,  # Extract value from Password value object
             username=user.username.value,
-            status=user.status,  # status is a plain string in User entity
+            status=user.status.value,  # Extract value from Status value object
             avatar_url=user.avatar.value,
         )
         self.session.add(db_user)
