@@ -38,7 +38,7 @@ async def test_login(client):
     response = await client.post("/auth/login", data=login_data)
     assert response.status_code == 200
     data = response.json()
-    assert "access_token" in data
+    assert "token" in data
     assert data["token_type"] == "bearer"
     
     # Try with wrong password
@@ -88,3 +88,119 @@ async def test_delete_user(client):
     # However, let's verify deletion works.
     r2 = await client.delete(f"/user/{user_id}")
     assert r2.status_code == 200
+
+async def test_update_user_password(client):
+    # Create a user
+    payload = {
+        "email": "updatepass@example.com",
+        "password": "oldpassword",
+        "username": "updateuser",
+        "status": "active",
+        "avatar_url": ""
+    }
+    create_response = await client.post("/user/", json=payload)
+    token = create_response.json()["token"]
+    
+    # Update password
+    update_payload = {
+        "password": "newpassword123"
+    }
+    response = await client.put("/user/me", json=update_payload, headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    
+    # Verify we can login with new password
+    login_data = {
+        "username": "updatepass@example.com",
+        "password": "newpassword123"
+    }
+    login_response = await client.post("/auth/login", data=login_data)
+    assert login_response.status_code == 200
+    
+    # Verify old password doesn't work
+    old_login_data = {
+        "username": "updatepass@example.com",
+        "password": "oldpassword"
+    }
+    old_login_response = await client.post("/auth/login", data=old_login_data)
+    assert old_login_response.status_code == 401
+
+async def test_update_user_username(client):
+    # Create a user
+    payload = {
+        "email": "updateusername@example.com",
+        "password": "password123",
+        "username": "oldusername",
+        "status": "active",
+        "avatar_url": ""
+    }
+    create_response = await client.post("/user/", json=payload)
+    token = create_response.json()["token"]
+    
+    # Update username
+    update_payload = {
+        "username": "newusername"
+    }
+    response = await client.put("/user/me", json=update_payload, headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    assert response.json()["username"] == "newusername"
+    
+    # Verify the change persists
+    me_response = await client.get("/user/me", headers={"Authorization": f"Bearer {token}"})
+    assert me_response.status_code == 200
+    assert me_response.json()["username"] == "newusername"
+
+async def test_update_user_avatar(client):
+    # Create a user
+    payload = {
+        "email": "updateavatar@example.com",
+        "password": "password123",
+        "username": "avataruser",
+        "status": "active",
+        "avatar_url": ""
+    }
+    create_response = await client.post("/user/", json=payload)
+    token = create_response.json()["token"]
+    
+    # Update avatar
+    update_payload = {
+        "avatar_url": "https://example.com/new-avatar.png"
+    }
+    response = await client.put("/user/me", json=update_payload, headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    assert response.json()["avatar_url"] == "https://example.com/new-avatar.png"
+    
+    # Verify the change persists
+    me_response = await client.get("/user/me", headers={"Authorization": f"Bearer {token}"})
+    assert me_response.status_code == 200
+    assert me_response.json()["avatar_url"] == "https://example.com/new-avatar.png"
+
+async def test_update_user_multiple_fields(client):
+    # Create a user
+    payload = {
+        "email": "updatemulti@example.com",
+        "password": "oldpass",
+        "username": "olduser",
+        "status": "active",
+        "avatar_url": ""
+    }
+    create_response = await client.post("/user/", json=payload)
+    token = create_response.json()["token"]
+    
+    # Update multiple fields at once
+    update_payload = {
+        "password": "newpass123",
+        "username": "newuser",
+        "avatar_url": "https://example.com/avatar.png"
+    }
+    response = await client.put("/user/me", json=update_payload, headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 200
+    assert response.json()["username"] == "newuser"
+    assert response.json()["avatar_url"] == "https://example.com/avatar.png"
+    
+    # Verify password was updated
+    login_data = {
+        "username": "updatemulti@example.com",
+        "password": "newpass123"
+    }
+    login_response = await client.post("/auth/login", data=login_data)
+    assert login_response.status_code == 200

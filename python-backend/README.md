@@ -7,7 +7,6 @@ Este documento describe la estructura de carpetas y la arquitectura por capas ut
 ### Raíz
 - **DB/**: Contiene scripts SQL para la inicialización y migración de la base de datos (ej. `DBWEAVER_mysql.sql`).
 - **src/**: Directorio principal que contiene todo el código fuente del backend.
-- **.devcontainer/**: Configuración para el entorno de desarrollo en contenedores (VS Code Dev Containers).
 - **Dockerfile** & **docker-compose.yml**: Archivos para la contenerización y orquestación de servicios.
 - **requirements.txt**: Lista de dependencias de Python.
 
@@ -61,7 +60,7 @@ Este proyecto sigue los principios de **Clean Architecture** (Arquitectura Limpi
 
 *   **Mantenibilidad**: Facilita la navegación y comprensión del código al tener lugares predecibles para cada tipo de lógica.
 *   **Escalabilidad**: Permite que el equipo trabaje en diferentes capas sin interferir constantemente entre sí.
-*   **Evolución**: Si en el futuro se decide cambiar MySQL por PostgreSQL o FastAPI por otro framework, la lógica central del negocio permanecerá intacta.
+*   **Evolución**: Si en el futuro se decide cambiar MySQL por otra DB o FastAPI por otro framework, la lógica central del negocio permanecerá intacta.
 
 
 # Requisitos de ejecución  

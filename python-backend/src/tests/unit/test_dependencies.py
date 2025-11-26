@@ -1,12 +1,10 @@
 import pytest
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, patch
 from fastapi import HTTPException
-from api.dependencies import get_current_user
+from api.dependencies import get_current_user, get_token_payload
 from application.services.user_service import UserService
 from domain.user.entities import User
 from domain.user.value_objects import Email, Username, Status, AvatarURL
-from jose import jwt
-from core.security import SECRET_KEY, ALGORITHM
 
 @pytest.fixture
 def mock_user_service():
@@ -17,10 +15,11 @@ def mock_user_service():
 
 @pytest.mark.asyncio
 async def test_get_current_user_valid_token(mock_user_service):
+    # Arrange
     email = "test@example.com"
-    token = jwt.encode({"sub": email}, SECRET_KEY, algorithm=ALGORITHM)
+    payload = {"sub": email}
     
-    user = User(
+    expected_user = User(
         user_id=1,
         email=Email(email),
         password="hashed",
@@ -29,29 +28,45 @@ async def test_get_current_user_valid_token(mock_user_service):
         avatar=AvatarURL("")
     )
     
-    mock_user_service.user_repo.get_by_email.return_value = user
+    mock_user_service.user_repo.get_by_email.return_value = expected_user
     
-    current_user = await get_current_user(token, mock_user_service)
+    # Act
+    # We call get_current_user directly, passing the resolved dependencies
+    user = await get_current_user(payload=payload, service=mock_user_service)
     
-    assert current_user == user
+    # Assert
+    assert user == expected_user
+    mock_user_service.user_repo.get_by_email.assert_called_once_with(email)
 
 @pytest.mark.asyncio
-async def test_get_current_user_invalid_token(mock_user_service):
+async def test_get_token_payload_invalid_token():
+    # Arrange
     token = "invalid.token"
     
-    with pytest.raises(HTTPException) as exc:
-        await get_current_user(token, mock_user_service)
-    
-    assert exc.value.status_code == 401
+    # Act & Assert
+    # We expect get_token_payload to raise HTTPException when decode_access_token returns None
+    # We rely on the fact that decode_access_token (which uses jose.jwt.decode) 
+    # will return None or raise error for this garbage token in the actual implementation,
+    # OR we can mock decode_access_token to be sure.
+    # Let's mock decode_access_token to ensure unit isolation.
+    with patch("api.dependencies.decode_access_token", return_value=None):
+        with pytest.raises(HTTPException) as exc:
+            await get_token_payload(token)
+        
+        assert exc.value.status_code == 401
+        assert exc.value.detail == "Could not validate credentials"
 
 @pytest.mark.asyncio
 async def test_get_current_user_user_not_found(mock_user_service):
+    # Arrange
     email = "test@example.com"
-    token = jwt.encode({"sub": email}, SECRET_KEY, algorithm=ALGORITHM)
+    payload = {"sub": email}
     
     mock_user_service.user_repo.get_by_email.return_value = None
     
+    # Act & Assert
     with pytest.raises(HTTPException) as exc:
-        await get_current_user(token, mock_user_service)
+        await get_current_user(payload=payload, service=mock_user_service)
         
     assert exc.value.status_code == 401
+    assert exc.value.detail == "Could not validate credentials"

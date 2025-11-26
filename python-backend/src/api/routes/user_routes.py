@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from api.schemas.user_schema import UserCreate, UserResponse, UserWithToken
+from api.schemas.user_schema import UserCreate, UserResponse, UserWithToken, UserUpdate
 from application.services.user_service import UserService
 from api.dependencies import get_user_service, get_current_user
 from core.security import create_access_token
@@ -41,6 +41,27 @@ async def read_users_me(current_user = Depends(get_current_user)):
         username=current_user.username.value,
         status=current_user.status.value,
         avatar_url=current_user.avatar.value
+    )
+
+@router.put("/me", response_model=UserResponse)
+async def update_user_me(
+    payload: UserUpdate,
+    current_user = Depends(get_current_user),
+    service: UserService = Depends(get_user_service)
+):
+    updated_user = await service.update_user(
+        user_id=current_user.user_id,
+        password=payload.password,
+        username=payload.username,
+        avatar_url=payload.avatar_url
+    )
+    
+    return UserResponse(
+        user_id=updated_user.user_id,
+        email=updated_user.email.value,
+        username=updated_user.username.value,
+        status=updated_user.status.value,
+        avatar_url=updated_user.avatar.value
     )
 
 @router.delete("/{user_id}")

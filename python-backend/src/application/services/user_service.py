@@ -38,6 +38,24 @@ class UserService:
             return None
         return user
 
+    async def update_user(self, user_id: int, password: str | None = None, username: str | None = None, avatar_url: str | None = None):
+        user = await self.user_repo.get(user_id)
+        if not user:
+            return None
+            
+        if password:
+            hashed_password = hash_password(Password(password))
+            user.password = hashed_password
+            
+        if username:
+            user.username = Username(username)
+            
+        if avatar_url is not None:
+             user.avatar = AvatarURL(avatar_url)
+             
+        await self.user_repo.update(user)
+        return user
+
     async def delete_user(self, user_id: int):
         await self.user_repo.delete(user_id)
         return {"status": "deleted", "id": user_id}

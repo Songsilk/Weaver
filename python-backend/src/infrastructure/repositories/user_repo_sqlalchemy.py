@@ -51,6 +51,18 @@ class UserRepositorySQLAlchemy(UserRepository):
         await self.session.refresh(db_user)
         user.user_id = db_user.user_id
 
+    async def update(self, user: User):
+        db_user = await self.session.get(UserModel, user.user_id)
+        if db_user:
+            db_user.email = user.email.value
+            db_user.password = user.password.value
+            db_user.username = user.username.value
+            db_user.status = user.status.value
+            db_user.avatar_url = user.avatar.value
+            
+            await self.session.commit()
+            await self.session.refresh(db_user)
+
     async def delete(self, user_id: int):
         db_user = await self.session.get(UserModel, user_id)
         await self.session.delete(db_user)
