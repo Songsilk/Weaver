@@ -39,7 +39,7 @@ async def read_users_me(current_user = Depends(get_current_user)):
         user_id=current_user.user_id,
         email=current_user.email.value,
         username=current_user.username.value,
-        status=current_user.status,
+        status=current_user.status.value,
         avatar_url=current_user.avatar.value
     )
 

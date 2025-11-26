@@ -3,13 +3,12 @@ from fastapi.security import OAuth2PasswordRequestForm
 from api.dependencies import get_user_service
 from application.services.user_service import UserService
 from core.security import create_access_token
+from api.schemas.auth_schema import Token
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+
 
 @router.post("/login", response_model=Token)
 async def login(
@@ -31,7 +30,7 @@ async def login(
     # Create access token with user's email as subject
     access_token = create_access_token(data={"sub": user.email.value})
     
-    return {
-        "access_token": access_token,
-        "token_type": "bearer"
-    }
+    return Token(
+        access_token=access_token,
+        token_type="bearer"
+    )

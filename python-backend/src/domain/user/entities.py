@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List
-from .value_objects import Email, Username, AvatarURL
+from .value_objects import Email, Username, AvatarURL, Status, Password
 #from domain.cards.entities import Card
 #from domain.contacts.entities import ContactCard
 
@@ -8,7 +8,7 @@ from .value_objects import Email, Username, AvatarURL
 class User:
     user_id: int
     email: Email
-    password: str 
+    password: Password 
     username: Username
-    status: str
+    status: Status
     avatar: AvatarURL

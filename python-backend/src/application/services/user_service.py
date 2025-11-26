@@ -1,4 +1,4 @@
-from domain.user.value_objects import Email, Username, AvatarURL
+from domain.user.value_objects import Email, Username, AvatarURL, Status, Password 
 from domain.user.entities import User
 from domain.user.repositories import UserRepository
 from core.security import hash_password, verify_password
@@ -12,9 +12,9 @@ class UserService:
         username_vo = Username(username)
         
         # Hash the password before storing
-        hashed_password = hash_password(passw)
+        hashed_password = hash_password(Password(passw))
         
-        status_vo = status(statuss)
+        status_vo = Status(statuss)
         avatar_vo = AvatarURL(avatar)
 
         user = User(
