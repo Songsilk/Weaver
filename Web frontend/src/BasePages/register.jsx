@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom"; // <-- Asegúrate de importar esto
 import logoWeaver from "./assets/WEAVER_logo.png";
 import "./login.css";
 
@@ -22,11 +23,14 @@ export default function Register() {
     confirm: ""
   });
 
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   const [touched, setTouched] = useState({
     username: false,
     email: false,
     password: false,
-    confirm: false
+    confirm: false,
+    terms: false,
   });
 
   // handlers
@@ -50,14 +54,17 @@ export default function Register() {
   const isEmailValid = form.email.includes("@") && form.email.includes(".");
   const isPasswordValid = form.password.length >= 6;
   const isConfirmValid = form.password === form.confirm && form.confirm.length > 0;
+  const isTermsValid = termsAccepted;
 
-  const isFormValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmValid;
+  const isFormValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmValid && isTermsValid;
+
+  const navigate = useNavigate(); // <-- Importar navigate aquí
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid) {
       // marcar todo como touched para mostrar errores
-      setTouched({ username: true, email: true, password: true, confirm: true });
+      setTouched({ username: true, email: true, password: true, confirm: true, terms: true });
       return;
     }
 
@@ -92,10 +99,14 @@ export default function Register() {
         throw new Error(message);
       }
 
+      const data = await res.json();
+      // Guardar el token JWT en el localStorage
+      localStorage.setItem("token", data.token);
+
       setSuccessMsg("Cuenta creada correctamente. Redirigiendo a login...");
       // Espera un momento y ve al login
       setTimeout(() => {
-        navigate("/login");
+        navigate("/"); // Redirige a login
       }, 1500);
     } catch (err) {
       setErrorMsg(err.message || "Ocurrió un error al crear la cuenta.");
@@ -207,7 +218,7 @@ export default function Register() {
                   e.preventDefault();
                   // intentar enviar el form si es válido
                   if (isFormValid) {
-                    // dispara submit manuel
+                    // dispara submit manual
                     e.target.form.requestSubmit?.();
                   }
                 }
@@ -224,7 +235,11 @@ export default function Register() {
             <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
+                name="terms"
                 className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-900 text-violet-500 focus:ring-violet-500 cursor-pointer"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                onBlur={handleBlur}
               />
               <span>I have read and agreeded to the terms and conditions - Pay 50 rosaries</span>
             </label>

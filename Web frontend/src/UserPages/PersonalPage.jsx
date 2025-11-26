@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Rnd } from "react-rnd";
 import { useNavigate } from "react-router-dom";
 
-import "./profiles.css";
+import "./PersonalPage.css";
 import Logo from "./assets/WEAVER_logo.png";
 
 const PROFILE_PLACEHOLDER = "https://via.placeholder.com/64";
@@ -61,6 +61,21 @@ export default function ProfileEditor() {
       return copy;
     });
   }
+
+  function saveToFile() {
+    const dataStr = JSON.stringify(fields, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "profiles.json";
+    link.click();
+
+    URL.revokeObjectURL(url);
+  }
+
 
   function moveFieldDown(id) {
     setFields((prev) => {
@@ -229,8 +244,8 @@ export default function ProfileEditor() {
                     }}
                     onMouseDown={() => setSelectedId(field.id)}
                     className={`profiles-field ${selectedId === field.id
-                        ? "profiles-field-selected"
-                        : ""
+                      ? "profiles-field-selected"
+                      : ""
                       }`}
                     style={{
                       zIndex: selectedId === field.id ? 40 : 10,
@@ -346,7 +361,7 @@ export default function ProfileEditor() {
           <div className="profiles-help-actions">
             <button
               type="button"
-              onClick={() => console.log("saving...", fields)}
+              onClick={saveToFile}
               className="profiles-save-button"
             >
               Save
