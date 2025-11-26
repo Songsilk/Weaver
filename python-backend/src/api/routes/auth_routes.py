@@ -31,6 +31,6 @@ async def login(
     access_token = create_access_token(data={"sub": user.email.value})
     
     return Token(
-        access_token=access_token,
+        token=access_token,
         token_type="bearer"
     )

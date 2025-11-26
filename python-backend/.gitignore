@@ -11,4 +11,4 @@ db_data/
 # Environment files (secrets)
 .env
 .vscode/
-.devcontainer/
+/.devcontainer

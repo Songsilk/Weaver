@@ -5,7 +5,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./src:/app       # mounts source folder for live reload
+      - ./src:/app # mounts source folder for live reload
     environment:
       DATABASE_HOST: db
       DATABASE_USER: root
@@ -26,6 +26,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./DB:/docker-entrypoint-initdb.d:ro  # optional initial DB
+      - ./DB:/docker-entrypoint-initdb.d:ro # optional initial DB
 volumes:
   db_data:
