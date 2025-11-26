@@ -27,3 +27,5 @@ class status:
 @dataclass(frozen=True)
 class AvatarURL:
     value: str
+
+
