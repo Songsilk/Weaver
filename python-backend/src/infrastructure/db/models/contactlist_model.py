@@ -1,9 +1,13 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, DateTime, ForeignKey, text
+from sqlalchemy import Integer, DateTime, ForeignKey, text, UniqueConstraint
 from infrastructure.db.session import Base
 
 class ContactListModel(Base):
     __tablename__ = "ContactList"
+
+    __table_args__ = (
+        UniqueConstraint('owner_user_id', 'contact_user_id', name='uix_owner_contact'),
+    )
 
     contact_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     owner_user_id: Mapped[int] = mapped_column(ForeignKey("User.user_id"), nullable=False)
