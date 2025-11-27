@@ -7,9 +7,11 @@ import cinemaHornet from "./assets/hornet-cinema.png";
 import payasoKnight from "./assets/payaso-knight.png";
 import shaw from "./assets/shaw-hornet.png";
 import cilantroHornet from "./assets/cilantro-hornet.png";
+import { useAuth } from "./AuthContext";
 
 function Home() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const slides = [
     {
@@ -136,18 +138,41 @@ function Home() {
           </nav>
 
           <div className="home-nav-right">
-            <button
-              className="home-auth-button"
-              onClick={() => navigate("/login")}
-            >
-              LOGIN
-            </button>
-            <button
-              className="home-auth-button home-auth-secondary"
-              onClick={() => navigate("/Register")}
-            >
-              SIGN UP
-            </button>
+            {user ? (
+              <div className="home-user-pill"
+                onClick={(logout)}
+              >
+                <img
+                  src={user.avatar_url || logoWeaver}
+                  alt="User avatar"
+                  className="home-user-avatar"
+                  draggable="false"
+                />
+                <div className="home-user-text">
+                  <span className="home-user-name">
+                    {user.username || "Weaver"}
+                  </span>
+                  <span className="home-user-email">
+                    {user.email || ""}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <>
+                <button
+                  className="home-auth-button"
+                  onClick={() => navigate("/login")}
+                >
+                  LOGIN
+                </button>
+                <button
+                  className="home-auth-button home-auth-secondary"
+                  onClick={() => navigate("/Register")}
+                >
+                  SIGN UP
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -166,7 +191,9 @@ function Home() {
               <div className="home-hero-actions">
                 <button
                   className="home-primary-button"
-                  onClick={() => navigate("/login")}
+                  onClick={() =>
+                    user ? navigate("/personalPage") : navigate("/login")
+                  }
                 >
                   Enter to Weaver
                 </button>
@@ -175,12 +202,6 @@ function Home() {
                   onClick={() => scrollToSection("about-section")}
                 >
                   See how it works
-                </button>
-                <button
-                  className="home-secondary-button"
-                  onClick={() => navigate("/personalPage")}
-                >
-                  Profiles
                 </button>
               </div>
             </div>
@@ -316,7 +337,7 @@ function Home() {
                       left: 0,
                       behavior: "instant", // o "smooth" si quieres animación
                     });
-                    navigate("/Register");
+                    user ? navigate("/personalPage") : navigate("/Register");
                   }}
                 >
                   Start knitting

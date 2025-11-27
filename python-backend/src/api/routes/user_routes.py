@@ -1,25 +1,69 @@
 from fastapi import APIRouter, Depends
-from api.schemas.user_schema import UserCreate, UserResponse
-from application.services.user_service import create_user_service, delete_user_service
-from infrastructure.repositories.user_repo_sqlalchemy import UserRepositorySQLAlchemy
-from infrastructure.db.session import get_session
+from api.schemas.user_schema import UserCreate, UserResponse, UserWithToken, UserUpdate
+from application.services.user_service import UserService
+from api.dependencies import get_user_service, get_current_user
+from core.security import create_access_token
 
 router = APIRouter(prefix="/user")
 
-@router.post("/", response_model=UserResponse)
-async def create_user(payload: UserCreate, session=Depends(get_session)):
-    print("Creating user in session:", session)
-    repo = UserRepositorySQLAlchemy(session)
-    user_id = await create_user_service(repo,
-                                     payload.email,
-                                     payload.password,
-                                     payload.username,
-                                     payload.status,
-                                     payload.avatar_url)
-    return {"user_id": user_id}
+@router.post("/", response_model=UserWithToken)
+async def create_user(payload: UserCreate, service: UserService = Depends(get_user_service)):
+    user_id = await service.create_user(
+        payload.email,
+        payload.password,
+        payload.username,
+        payload.status,
+        payload.avatar_url
+    )
+    
+    # Create token
+    access_token = create_access_token(data={"sub": payload.email})
+    
+    # Construct response
+    user_response = UserResponse(
+        user_id=user_id,
+        email=payload.email,
+        username=payload.username,
+        status=payload.status,
+        avatar_url=payload.avatar_url
+    )
+    
+    return {
+        "user": user_response,
+        "token": access_token
+    }
 
+@router.get("/me", response_model=UserResponse)
+async def read_users_me(current_user = Depends(get_current_user)):
+    return UserResponse(
+        user_id=current_user.user_id,
+        email=current_user.email.value,
+        username=current_user.username.value,
+        status=current_user.status.value,
+        avatar_url=current_user.avatar.value
+    )
+
+@router.put("/me", response_model=UserResponse)
+async def update_user_me(
+    payload: UserUpdate,
+    current_user = Depends(get_current_user),
+    service: UserService = Depends(get_user_service)
+):
+    updated_user = await service.update_user(
+        user_id=current_user.user_id,
+        password=payload.password,
+        username=payload.username,
+        avatar_url=payload.avatar_url
+    )
+    
+    return UserResponse(
+        user_id=updated_user.user_id,
+        email=updated_user.email.value,
+        username=updated_user.username.value,
+        status=updated_user.status.value,
+        avatar_url=updated_user.avatar.value
+    )
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int, session=Depends(get_session)):
-    repo = UserRepositorySQLAlchemy(session)
-    return await delete_user_service(repo, user_id)
+async def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
+    return await service.delete_user(user_id)
