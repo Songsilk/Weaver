@@ -117,7 +117,9 @@ function Home() {
 
             <button
               className="home-nav-link home-nav-link-MyContent"
-              onClick={() => navigate("/login")}
+              onClick={() =>
+                user ? navigate("/personalPage") : navigate("/login")
+              }
             >
               My content
             </button>
