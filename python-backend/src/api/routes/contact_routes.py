@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
+from typing import List
 from api.schemas.contact_schema import ContactCreate, ContactResponse
 from infrastructure.db.session import get_session
 from infrastructure.db.models import ContactListModel, UserModel
@@ -54,3 +55,46 @@ async def create_contact(owner_id: int, payload: ContactCreate, session: AsyncSe
         contact_user_id=db_contact.contact_user_id,
         added_at=db_contact.added_at,
     )
+
+
+@router.get("/{owner_id}/contacts", response_model=List[ContactResponse])
+async def get_contacts(owner_id: int, session: AsyncSession = Depends(get_session), caller: dict = Depends(get_caller)):
+    # Authorization: only owner or admin can list contacts
+    if caller.get("id") != owner_id and caller.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Forbidden: only the owner or admin can view contacts")
+
+    owner = await session.get(UserModel, owner_id)
+    if not owner:
+        raise HTTPException(status_code=404, detail="Owner user not found")
+
+    stmt = select(ContactListModel).where(ContactListModel.owner_user_id == owner_id)
+    result = await session.execute(stmt)
+    contacts = result.scalars().all()
+
+    return [
+        ContactResponse(
+            contact_id=c.contact_id,
+            owner_user_id=c.owner_user_id,
+            contact_user_id=c.contact_user_id,
+            added_at=c.added_at,
+        )
+        for c in contacts
+    ]
+
+
+@router.delete("/{owner_id}/contacts/{contact_id}")
+async def delete_contact(owner_id: int, contact_id: int, session: AsyncSession = Depends(get_session), caller: dict = Depends(get_caller)):
+    # Authorization: only owner or admin can delete contacts
+    if caller.get("id") != owner_id and caller.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Forbidden: only the owner or admin can delete contacts")
+    owner = await session.get(UserModel, owner_id)
+    if not owner:
+        raise HTTPException(status_code=404, detail="Owner user not found")
+    # Get the contact and ensure it belongs to owner
+    db_contact = await session.get(ContactListModel, contact_id)
+    if not db_contact or db_contact.owner_user_id != owner_id:
+        raise HTTPException(status_code=404, detail="Contact not found for this owner")
+    await session.delete(db_contact)
+    await session.commit()
+
+    return {"status": "deleted", "contact_id": contact_id}
