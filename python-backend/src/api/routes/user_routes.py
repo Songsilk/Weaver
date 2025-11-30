@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends
-from api.schemas.user_schema import UserCreate, UserResponse, UserWithToken, UserUpdate
+from fastapi import APIRouter, Depends, HTTPException, status
+from api.schemas.user_schema import UserCreate, UserResponse, UserWithToken, UserUpdate, UserDeleted, UserDelete
 from application.services.user_service import UserService
 from api.dependencies import get_user_service, get_current_user
 from core.security import create_access_token
@@ -8,13 +8,19 @@ router = APIRouter(prefix="/user")
 
 @router.post("/", response_model=UserWithToken)
 async def create_user(payload: UserCreate, service: UserService = Depends(get_user_service)):
-    user_id = await service.create_user(
-        payload.email,
-        payload.password,
-        payload.username,
-        payload.status,
-        payload.avatar_url
-    )
+    try:
+        user_id = await service.create_user(
+            payload.email,
+            payload.password,
+            payload.username,
+            payload.status,
+            payload.avatar_url
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
     
     # Create token
     access_token = create_access_token(data={"sub": payload.email})
@@ -64,6 +70,9 @@ async def update_user_me(
         avatar_url=updated_user.avatar.value
     )
 
-@router.delete("/{user_id}")
-async def delete_user(user_id: int, service: UserService = Depends(get_user_service)):
-    return await service.delete_user(user_id)
+@router.delete("/me", response_model=UserDeleted)
+async def delete_user(payload: UserDelete, current_user = Depends(get_current_user), service: UserService = Depends(get_user_service)):
+    deleted_user = await service.delete_user(
+        email=payload.email
+    )
+    return deleted_user

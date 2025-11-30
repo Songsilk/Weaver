@@ -8,6 +8,11 @@ class UserService:
         self.user_repo = user_repo
 
     async def create_user(self, email: str, passw: str, username: str, statuss: str, avatar: str = "") -> int:
+        # Check if user exists
+        existing_user = await self.user_repo.get_by_email(email)
+        if existing_user:
+            raise ValueError("User with this email already exists")
+
         email_vo = Email(email)
         username_vo = Username(username)
         
@@ -56,6 +61,9 @@ class UserService:
         await self.user_repo.update(user)
         return user
 
-    async def delete_user(self, user_id: int):
-        await self.user_repo.delete(user_id)
-        return {"status": "deleted", "id": user_id}
+    async def delete_user(self, email: str):
+        user = await self.user_repo.get_by_email(email)
+        if not user:
+            return {"status": "not found", "email": email}
+        await self.user_repo.delete(email)
+        return {"status": "deleted", "email": email}

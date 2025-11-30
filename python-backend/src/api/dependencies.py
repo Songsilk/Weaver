@@ -13,13 +13,29 @@ async def get_user_service(session: AsyncSession = Depends(get_session)) -> User
     return UserService(repo)
 
 async def get_token_payload(token: str = Depends(oauth2_scheme)) -> dict:
+    """
+    FastAPI dependency that extracts and validates the JWT access token from the request.
+    
+    This dependency automatically retrieves the Bearer token from the Authorization header,
+    decodes it, and returns the token payload if valid. If the token is invalid or cannot
+    be decoded, it raises an HTTP 401 Unauthorized exception.
+    
+    Args:
+        token (str): The JWT access token extracted from the Authorization header
+                     via the OAuth2PasswordBearer scheme.
+    
+    Returns:
+        dict: The decoded token payload containing user claims (e.g., 'sub' for email).
+    
+    Raises:
+        HTTPException: 401 Unauthorized if the token is invalid or cannot be validated.
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     payload = decode_access_token(token)
-    print(payload)
     if payload is None:
         raise credentials_exception
     return payload
@@ -28,7 +44,6 @@ async def get_current_user(
     payload: dict = Depends(get_token_payload),
     service: UserService = Depends(get_user_service)
 ):
-    print(payload)
     email: str = payload.get("sub")
 
 

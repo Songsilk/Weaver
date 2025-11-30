@@ -6,7 +6,7 @@ from core.security import create_access_token
 app = FastAPI()
 
 @app.get("/test-token")
-async def test_token(payload: dict = Depends(get_token_payload)):
+async def read_token(payload: dict = Depends(get_token_payload)):
     return payload
 
 client = TestClient(app)

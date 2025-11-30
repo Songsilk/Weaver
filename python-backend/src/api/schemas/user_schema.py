@@ -37,3 +37,18 @@ class UserWithToken(BaseModel):
     """
     user: UserResponse
     token: str
+
+
+class UserDelete(BaseModel):
+    """
+    Schema values received for user deletion in /user/me API
+    """
+    email: EmailStr
+    token: str
+
+class UserDeleted(BaseModel):
+    """
+    Schema values returned for user deletion in /user/me API
+    """
+    status: str
+    email: EmailStr
