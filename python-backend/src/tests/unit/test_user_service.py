@@ -26,6 +26,7 @@ async def test_create_user(user_service, mock_user_repo):
         user.user_id = 1
     
     mock_user_repo.save.side_effect = side_effect_save
+    mock_user_repo.get_by_email.return_value = None
 
     user_id = await user_service.create_user(email, password, username, status, avatar)
 
@@ -35,6 +36,29 @@ async def test_create_user(user_service, mock_user_repo):
     assert saved_user.email.value == email
     assert saved_user.username.value == username
     assert saved_user.password != password
+
+@pytest.mark.asyncio
+async def test_create_user_duplicate(user_service, mock_user_repo):
+    email = "test@example.com"
+    password = "password123"
+    username = "testuser"
+    status = "active"
+    avatar = "http://avatar.url"
+
+    # Mock existing user
+    mock_user_repo.get_by_email.return_value = User(
+        user_id=1,
+        email=Email(email),
+        password=Password("hashed"),
+        username=Username(username),
+        status=Status(status),
+        avatar=AvatarURL(avatar)
+    )
+
+    with pytest.raises(ValueError, match="User with this email already exists"):
+        await user_service.create_user(email, password, username, status, avatar)
+    
+    mock_user_repo.save.assert_not_called()
 
 @pytest.mark.asyncio
 async def test_authenticate_user_success(user_service, mock_user_repo):
