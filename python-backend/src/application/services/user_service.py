@@ -8,6 +8,11 @@ class UserService:
         self.user_repo = user_repo
 
     async def create_user(self, email: str, passw: str, username: str, statuss: str, avatar: str = "") -> int:
+        # Check if user exists
+        existing_user = await self.user_repo.get_by_email(email)
+        if existing_user:
+            raise ValueError("User with this email already exists")
+
         email_vo = Email(email)
         username_vo = Username(username)
         

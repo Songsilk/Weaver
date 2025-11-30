@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from api.schemas.user_schema import UserCreate, UserResponse, UserWithToken, UserUpdate, UserDeleted, UserDelete
 from application.services.user_service import UserService
 from api.dependencies import get_user_service, get_current_user
@@ -8,13 +8,19 @@ router = APIRouter(prefix="/user")
 
 @router.post("/", response_model=UserWithToken)
 async def create_user(payload: UserCreate, service: UserService = Depends(get_user_service)):
-    user_id = await service.create_user(
-        payload.email,
-        payload.password,
-        payload.username,
-        payload.status,
-        payload.avatar_url
-    )
+    try:
+        user_id = await service.create_user(
+            payload.email,
+            payload.password,
+            payload.username,
+            payload.status,
+            payload.avatar_url
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
     
     # Create token
     access_token = create_access_token(data={"sub": payload.email})
