@@ -63,8 +63,12 @@ class UserRepositorySQLAlchemy(UserRepository):
             await self.session.commit()
             await self.session.refresh(db_user)
 
-    async def delete(self, user_id: int):
-        db_user = await self.session.get(UserModel, user_id)
-        await self.session.delete(db_user)
-        await self.session.commit()
+    async def delete(self, email: str):
+        stmt = select(UserModel).where(UserModel.email == email)
+        result = await self.session.execute(stmt)
+        db_user = result.scalar_one_or_none()
+        
+        if db_user:
+            await self.session.delete(db_user)
+            await self.session.commit()
 

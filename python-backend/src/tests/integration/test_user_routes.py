@@ -69,7 +69,7 @@ async def test_read_users_me(client):
 async def test_delete_user(client):
     # create user
     payload = {
-        "email": "to_dddeledte@sexample.com",
+        "email": "to_delete@example.com",
         "password": "secret",
         "username": "deltester",
         "status": "active",
@@ -78,16 +78,21 @@ async def test_delete_user(client):
 
     r1 = await client.post("/user/", json=payload)
     assert r1.status_code == 200
+    data = r1.json()
+    token = data["token"]
     
-    # We need to extract user_id from the new response structure if we were using it,
-    # but the test just asserts 200 on creation.
-    # If we want to test deletion, we need the ID.
-    user_id = r1.json()["user"]["user_id"]
+    # Delete payload
+    delete_payload = {
+        "email": payload["email"],
+        "token": token
+    }
     
-    # To delete, we might need auth if we protected it, but currently delete is not protected in routes.
-    # However, let's verify deletion works.
-    r2 = await client.delete(f"/user/{user_id}")
+    # Delete request
+    # We use client.request because client.delete might not support json body in some versions/wrappers
+    r2 = await client.request("DELETE", "/user/me", json=delete_payload, headers={"Authorization": f"Bearer {token}"})
     assert r2.status_code == 200
+    assert r2.json()["status"] == "deleted"
+    assert r2.json()["email"] == payload["email"]
 
 async def test_update_user_password(client):
     # Create a user

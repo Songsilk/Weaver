@@ -56,6 +56,9 @@ class UserService:
         await self.user_repo.update(user)
         return user
 
-    async def delete_user(self, user_id: int):
-        await self.user_repo.delete(user_id)
-        return {"status": "deleted", "id": user_id}
+    async def delete_user(self, email: str):
+        user = await self.user_repo.get_by_email(email)
+        if not user:
+            return {"status": "not found", "email": email}
+        await self.user_repo.delete(email)
+        return {"status": "deleted", "email": email}
