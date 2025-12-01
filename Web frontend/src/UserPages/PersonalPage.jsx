@@ -1,3 +1,4 @@
+// src/UserPages/PersonalPage.jsx
 import React, { useState, useRef, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { useNavigate } from "react-router-dom";
@@ -5,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./PersonalPage.css"; // debe existir junto a este archivo
 import Logo from "../assets/WEAVER_logo.png";
 
-import getFieldComponent from "./PageComponents/index.jsx";
+import getFieldComponent, { getFieldComponent as namedGet } from "./PageComponents/index.jsx";
 import FieldEditorModal from "./PageComponents/ModalField.jsx";
 
 const PROFILE_PLACEHOLDER = "https://via.placeholder.com/64";
@@ -46,10 +47,10 @@ export default function PersonalPage() {
       prev.map((f) =>
         f.id === id
           ? {
-            ...f,
-            ...patch,
-            style: { ...(f.style || {}), ...(patch.style || {}) },
-          }
+              ...f,
+              ...patch,
+              style: { ...(f.style || {}), ...(patch.style || {}) },
+            }
           : f
       )
     );
