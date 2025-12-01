@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoWeaver from "./assets/WEAVER_logo.png";
 import "./login.css";
-import { useAuth } from "./AuthContext"; 
+import { useAuth } from "./AuthContext";
 
 export default function Register() {
   const API_BASE_URL = "http://127.0.0.1:8000";
@@ -115,11 +115,14 @@ export default function Register() {
           const data = await res.json();
           if (data?.message) message = data.message;
           if (data?.detail) message = data.detail;
-        } catch {}
+        } catch { }
         throw new Error(message);
       }
 
       const data = await res.json();
+      // Guardar el token JWT en el localStorage
+      localStorage.setItem("token", data.token);
+
 
       if (!data.user || !data.token) {
         throw new Error("El backend no devolvió user + token correctamente.");
@@ -145,7 +148,7 @@ export default function Register() {
   return (
     <div className="login-page min-h-screen flex items-center justify-center px-4 py-7">
       <div className="max-w-md w-full login-card rounded-2xl border border-slate-800/80 bg-slate-950/80 shadow-2xl p-6 space-y-6">
-        
+
         {/* LOGO + TÍTULO */}
         <div className="text-center space-y-3">
           <img
@@ -267,7 +270,11 @@ export default function Register() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
-                  if (isFormValid) e.target.form.requestSubmit?.();
+                  // intentar enviar el form si es válido
+                  if (isFormValid) {
+                    // dispara submit manual
+                    e.target.form.requestSubmit?.();
+                  }
                 }
               }}
             />
@@ -304,11 +311,10 @@ export default function Register() {
             type="submit"
             disabled={!isFormValid || loading}
             className={`w-full rounded-lg py-2.5 text-sm font-semibold transition-colors
-            ${
-              isFormValid
-                ? "bg-violet-500 hover: cursor-pointer bg-violet-400 text-slate-950 shadow-[0_0_25px_rgba(139,92,246,0.6)]"
+            ${isFormValid
+                ? "bg-violet-500 hover: cursor-pointer text-slate-950 shadow-[0_0_25px_rgba(139,92,246,0.6)]"
                 : "bg-slate-800 text-slate-600 cursor-not-allowed"
-            }`}
+              }`}
           >
             {loading ? "Creating..." : "Create account"}
           </button>
