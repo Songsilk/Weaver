@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login from "./login.jsx";
-import Home from "./Home.jsx";
-import NotReady from "./Not_ready_page.jsx";
-import Register from "./register.jsx";
-import Profiles from "./profiles.jsx";
+import Login from "./BasePages/login.jsx";
+import Home from "./BasePages/Home.jsx";
+import NotReady from "./BasePages/Not_ready_page.jsx";
+import Register from "./BasePages/register.jsx";
+import Profiles from "./UserPages/PersonalPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/profiles",
+    path: "/personalPage",
     element: <Profiles />,
   },
 ]);

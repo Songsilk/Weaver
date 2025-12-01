@@ -4,7 +4,14 @@ import logoWeaver from "./assets/WEAVER_logo.png";
 import "./login.css";
 
 function Login() {
+    const API_BASE_URL = "http://127.0.0.1:8000"; // url de tu backend
+    const REGISTER_ENDPOINT = "/user/"; // api de registro de un nuevo usuario
+
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
+
     const navigate = useNavigate();
+
     const passwordRef = useRef(null);
 
     const [form, setForm] = useState({
@@ -40,22 +47,56 @@ function Login() {
 
     const isFormValid = isEmailValid && isPasswordValid;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!isFormValid) {
             // marcar campos como tocados para que salgan los mensajes rojos
             setTouched({ email: true, password: true });
             return;
         }
 
-        // Anuncio como en Register
-        alert(
-            "Inicio de sesión exitoso (mock). Próximo: integrar con FastAPI cuando esté listo."
-        );
+        try {
+            setLoading(true);
 
-        // luego navegas al home
-        navigate("/");
+            const response = await fetch(API_BASE_URL + REGISTER_ENDPOINT, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: form.email,
+                    password: form.password,
+                }),
+            });
+
+            if (!response.ok) {
+                let message = "Correo o contraseña incorrectos.";
+                try {
+                    const data = await res.json();
+                    if (data?.detail) message = data.detail;
+                    if (data?.message) message = data.message;
+                } catch {
+                    // si no era JSON, dejamos el mensaje por defecto
+                }
+                throw new Error(message);
+            }
+
+            const data = await response.json();
+
+            if (data.access_token) {
+                localStorage.setItem("token", data.access_token);
+            }
+            if (data.user) {
+                localStorage.setItem("user", JSON.stringify(data.user));
+            }
+
+            // luego navegas al home
+            navigate("/");
+        } catch (error) {
+            setErrorMsg(error.message || "Error desconocido. Inténtalo de nuevo.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -153,11 +194,10 @@ function Login() {
                     <button
                         type="submit"
                         disabled={!isFormValid}
-                        className={`w-full rounded-lg ${
-                            isFormValid
-                                ? "bg-violet-500 hover:bg-violet-400 cursor-pointer active:bg-violet-600 text-slate-950 font-semibold shadow-[0_0_25px_rgba(139,92,246,0.6)]"
-                                : "bg-slate-800 text-slate-500 cursor-not-allowed"
-                        } transition-colors py-2.5 text-sm`}
+                        className={`w-full rounded-lg ${isFormValid
+                            ? "bg-violet-500 hover:bg-violet-400 cursor-pointer active:bg-violet-600 text-slate-950 font-semibold shadow-[0_0_25px_rgba(139,92,246,0.6)]"
+                            : "bg-slate-800 text-slate-500 cursor-not-allowed"
+                            } transition-colors py-2.5 text-sm`}
                     >
                         Enter to Weaver
                     </button>

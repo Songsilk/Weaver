@@ -1,15 +1,15 @@
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom"; // <-- Asegúrate de importar esto
+import { useNavigate } from "react-router-dom";
 import logoWeaver from "./assets/WEAVER_logo.png";
 import "./login.css";
+import { useAuth } from "./AuthContext";
 
 export default function Register() {
+  const API_BASE_URL = "http://127.0.0.1:8000";
+  const REGISTER_ENDPOINT = "/user/";
 
-  const API_BASE_URL = "http://127.0.0.1:8000"; // url de tu backend
-  const REGISTER_ENDPOINT = "/user/"; // api de registro de un nuevo usuario
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const usernameRef = useRef(null);
   const emailRef = useRef(null);
@@ -20,17 +20,26 @@ export default function Register() {
     username: "",
     email: "",
     password: "",
-    confirm: ""
+    confirm: "",
   });
+
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const [touched, setTouched] = useState({
     username: false,
     email: false,
     password: false,
-    confirm: false
+    confirm: false,
+    terms: false,
   });
 
-  // handlers
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  // --------------------
+  // HANDLERS
+  // --------------------
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -42,30 +51,48 @@ export default function Register() {
   const handleKeyDown = (nextRef) => (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (nextRef && nextRef.current) nextRef.current.focus();
+      if (nextRef.current) nextRef.current.focus();
     }
   };
 
-  // validaciones simples en frontend
+  // --------------------
+  // VALIDACIONES FRONTEND
+  // --------------------
   const isUsernameValid = form.username.trim().length >= 2;
   const isEmailValid = form.email.includes("@") && form.email.includes(".");
   const isPasswordValid = form.password.length >= 6;
-  const isConfirmValid = form.password === form.confirm && form.confirm.length > 0;
+  const isConfirmValid =
+    form.password === form.confirm && form.confirm.length > 0;
+  const isTermsValid = termsAccepted;
 
-  const isFormValid = isUsernameValid && isEmailValid && isPasswordValid && isConfirmValid;
+  const isFormValid =
+    isUsernameValid &&
+    isEmailValid &&
+    isPasswordValid &&
+    isConfirmValid &&
+    isTermsValid;
 
-  const navigate = useNavigate(); // <-- Importar navigate aquí
-
+  // --------------------
+  // SUBMIT
+  // --------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!isFormValid) {
-      // marcar todo como touched para mostrar errores
-      setTouched({ username: true, email: true, password: true, confirm: true });
+      setTouched({
+        username: true,
+        email: true,
+        password: true,
+        confirm: true,
+        terms: true,
+      });
       return;
     }
 
     try {
       setLoading(true);
+      setErrorMsg("");
+      setSuccessMsg("");
 
       const res = await fetch(`${API_BASE_URL}${REGISTER_ENDPOINT}`, {
         method: "POST",
@@ -73,25 +100,22 @@ export default function Register() {
           "Content-Type": "application/json",
         },
 
-        // ⚠️ CLAVES DEL BODY A LO QUE ESPERE TU API
         body: JSON.stringify({
-          "email": form.email,
-          "username": form.username,
-          "password": form.password,
-          "status": "active",
-          "avatar_url": ""
+          email: form.email,
+          username: form.username,
+          password: form.password,
+          status: "active",
+          avatar_url: "",
         }),
       });
 
       if (!res.ok) {
-        // Intenta leer el mensaje de error que devuelva la API
         let message = "No se pudo crear la cuenta.";
         try {
           const data = await res.json();
           if (data?.message) message = data.message;
-        } catch {
-          // si la respuesta no es JSON, dejamos el mensaje genérico
-        }
+          if (data?.detail) message = data.detail;
+        } catch { }
         throw new Error(message);
       }
 
@@ -99,39 +123,68 @@ export default function Register() {
       // Guardar el token JWT en el localStorage
       localStorage.setItem("token", data.token);
 
-      setSuccessMsg("Cuenta creada correctamente. Redirigiendo a login...");
-      // Espera un momento y ve al login
+
+      if (!data.user || !data.token) {
+        throw new Error("El backend no devolvió user + token correctamente.");
+      }
+
+      login(data.user, data.token);
+
+      setSuccessMsg("Cuenta creada correctamente. Redirigiendo...");
+
       setTimeout(() => {
-        navigate("/"); // Redirige a login
-      }, 1500);
+        navigate("/");
+      }, 800);
     } catch (err) {
-      setErrorMsg(err.message || "Ocurrió un error al crear la cuenta.");
+      setErrorMsg(err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // --------------------
+  // UI
+  // --------------------
   return (
     <div className="login-page min-h-screen flex items-center justify-center px-4 py-7">
       <div className="max-w-md w-full login-card rounded-2xl border border-slate-800/80 bg-slate-950/80 shadow-2xl p-6 space-y-6">
-        {/* Logo / título */}
+
+        {/* LOGO + TÍTULO */}
         <div className="text-center space-y-3">
-          <img src={logoWeaver} className="login-logo" alt="Logo Weaver" draggable="false" />
+          <img
+            src={logoWeaver}
+            className="login-logo"
+            alt="Logo Weaver"
+            draggable="false"
+          />
 
           <h1 className="text-xl font-semibold text-slate-50 tracking-[0.2em] uppercase">
             Create your own thread
           </h1>
 
           <p className="text-sm text-slate-400">
-            Start weaving your own web — share your profile to new people!
+            Start weaving your own web — share your profile with new people!
           </p>
         </div>
 
-        {/* Formulario */}
+        {/* ERRORES Y ÉXITO */}
+        {errorMsg && (
+          <div className="text-xs text-rose-300 bg-rose-950/40 border border-rose-500/40 rounded-md px-3 py-2">
+            {errorMsg}
+          </div>
+        )}
+        {successMsg && (
+          <div className="text-xs text-emerald-300 bg-emerald-950/40 border border-emerald-500/40 rounded-md px-3 py-2">
+            {successMsg}
+          </div>
+        )}
+
+        {/* FORMULARIO */}
         <form className="space-y-5" onSubmit={handleSubmit} noValidate>
+
           {/* Username */}
           <div className="space-y-2">
-            <label htmlFor="username" className="block text-sm font-medium text-slate-200">
+            <label htmlFor="username" className="text-sm text-slate-200">
               Username
             </label>
             <input
@@ -139,7 +192,7 @@ export default function Register() {
               name="username"
               type="text"
               placeholder="skong"
-              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 shadow-inner"
+              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-50 shadow-inner focus:outline-none focus:ring-2 focus:ring-violet-500"
               value={form.username}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -147,13 +200,13 @@ export default function Register() {
               ref={usernameRef}
             />
             {touched.username && !isUsernameValid && (
-              <p className="text-xs text-rose-400 mt-1">El username debe tener al menos 2 caracteres.</p>
+              <p className="text-xs text-rose-400">Min. 2 characters.</p>
             )}
           </div>
 
           {/* Email */}
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-slate-200">
+            <label htmlFor="email" className="text-sm text-slate-200">
               Email
             </label>
             <input
@@ -161,7 +214,7 @@ export default function Register() {
               name="email"
               type="email"
               placeholder="tejedor@hive.com"
-              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 shadow-inner"
+              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-50 shadow-inner focus:outline-none focus:ring-2 focus:ring-violet-500"
               value={form.email}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -169,13 +222,15 @@ export default function Register() {
               ref={emailRef}
             />
             {touched.email && !isEmailValid && (
-              <p className="text-xs text-rose-400 mt-1">Introduce un correo válido.</p>
+              <p className="text-xs text-rose-400">
+                Please enter a valid email.
+              </p>
             )}
           </div>
 
           {/* Password */}
           <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-slate-200">
+            <label htmlFor="password" className="text-sm text-slate-200">
               Password
             </label>
             <input
@@ -183,7 +238,7 @@ export default function Register() {
               name="password"
               type="password"
               placeholder="••••••••"
-              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 shadow-inner"
+              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-50 shadow-inner focus:outline-none focus:ring-2 focus:ring-violet-500"
               value={form.password}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -191,13 +246,15 @@ export default function Register() {
               ref={passwordRef}
             />
             {touched.password && !isPasswordValid && (
-              <p className="text-xs text-rose-400 mt-1">La contraseña debe tener al menos 6 caracteres.</p>
+              <p className="text-xs text-rose-400">
+                Min. 6 characters required.
+              </p>
             )}
           </div>
 
-          {/* Confirm password */}
+          {/* Confirm */}
           <div className="space-y-2">
-            <label htmlFor="confirm" className="block text-sm font-medium text-slate-200">
+            <label htmlFor="confirm" className="text-sm text-slate-200">
               Confirm password
             </label>
             <input
@@ -205,10 +262,11 @@ export default function Register() {
               name="confirm"
               type="password"
               placeholder="Bind your password"
-              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 shadow-inner"
+              className="block w-full rounded-lg border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-50 shadow-inner focus:outline-none focus:ring-2 focus:ring-violet-500"
               value={form.confirm}
               onChange={handleChange}
               onBlur={handleBlur}
+              ref={confirmRef}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -219,37 +277,56 @@ export default function Register() {
                   }
                 }
               }}
-              ref={confirmRef}
             />
             {touched.confirm && !isConfirmValid && (
-              <p className="text-xs text-rose-400 mt-1">Las contraseñas no coinciden.</p>
+              <p className="text-xs text-rose-400">Passwords do not match.</p>
             )}
           </div>
 
-          {/* Opcional: checkbox */}
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          {/* Terms */}
+          <div className="text-xs text-slate-400">
             <label className="inline-flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-900 text-violet-500 focus:ring-violet-500 cursor-pointer"
+                name="terms"
+                className="h-3.5 w-3.5 rounded border-slate-600 bg-slate-900 text-violet-500 cursor-pointer"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                onBlur={handleBlur}
               />
-              <span>I have read and agreeded to the terms and conditions - Pay 50 rosaries</span>
+              <span>
+                I accept the terms and conditions — Pay 50 rosaries.
+              </span>
             </label>
+
+            {touched.terms && !isTermsValid && (
+              <p className="text-xs text-rose-400 mt-1">
+                You must accept the terms.
+              </p>
+            )}
           </div>
 
+          {/* SUBMIT */}
           <button
             type="submit"
-            disabled={!isFormValid}
-            className={`w-full rounded-lg ${isFormValid ? "bg-violet-500 hover:bg-violet-400 active:bg-violet-600 cursor-pointer shadow-[0_0_25px_rgba(139,92,246,0.6)] text-slate-950 font-semibold" : "bg-slate-800 text-slate-500 cursor-not-allowed"} transition-colors py-2.5 text-sm`}
+            disabled={!isFormValid || loading}
+            className={`w-full rounded-lg py-2.5 text-sm font-semibold transition-colors
+            ${isFormValid
+                ? "bg-violet-500 hover: cursor-pointer text-slate-950 shadow-[0_0_25px_rgba(139,92,246,0.6)]"
+                : "bg-slate-800 text-slate-600 cursor-not-allowed"
+              }`}
           >
-            Create account
+            {loading ? "Creating..." : "Create account"}
           </button>
         </form>
 
-        {/* Enlace a login */}
+        {/* Link a login */}
         <p className="text-center text-xs text-slate-400">
           Already have an account?{" "}
-          <a href="/login" className="font-medium text-violet-300 hover:text-violet-200">
+          <a
+            href="/login"
+            className="font-medium text-violet-300 hover:text-violet-200"
+          >
             Log in
           </a>
         </p>
