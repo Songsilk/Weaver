@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from api.routes.user_routes import router as user_router
+from api.routes.auth_routes import router as auth_router
 from infrastructure.db.session import engine, Base
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,6 +36,7 @@ async def lifespan(app: FastAPI):
 
 # Include routes
 app.include_router(user_router)
+app.include_router(auth_router)
 
 # Root endpoint
 @app.get("/")
