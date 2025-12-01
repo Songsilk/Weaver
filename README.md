@@ -8,7 +8,7 @@
 - Manuel Felipe Espinosa Español  
 - Juan Esteban Ruiz Guasca  
 - Camilo Trujillo Garzón  
-- Cristian Felipe Ramírez Montenegro  
+- Cristian Camilo Garzía Palacios 
 
 ## Lecturer  
 **Carlos Andrés Sierra Virgüez**
