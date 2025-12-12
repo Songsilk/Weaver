@@ -1,10 +1,10 @@
-name: Docker Image CICD
+name: Docker Image CI
 
 on:
   push:
-    branches: [ backend ]
+    branches: [ "backend" ]
   pull_request:
-    branches: [ backend ]
+    branches: [ "backend" ]
 
 jobs:
   build-and-push:
@@ -23,9 +23,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Lowercase Repo Name
+        run: |
+          echo "REPO_LC=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/${{ env.REPO_LC }}:latest
