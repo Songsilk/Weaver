@@ -19,7 +19,7 @@ async def test_story_complete_user_lifecycle(client: AsyncClient):
         "password": "securepassword",
         "username": "lifecycleuser",
         "status": "active",
-        "avatar_url": ""
+        "avatar_url": "" 
     }
     response = await client.post("/user/", json=user_payload)
     assert response.status_code == 200
