@@ -1,5 +1,14 @@
 import React from "react";
-export default function FieldImage({ field = {} }) {
-  const src = field.content || "https://via.placeholder.com/300x120?text=Image";
-  return <img src={src} alt="field" style={{ width: "100%", height: "100%", objectFit: "contain" }} />;
+
+export default function FieldImage({ field = {}, className = "", style = {} }) {
+  const src = field.content || "https://via.placeholder.com/600x200?text=Image";
+  return (
+    <div className={className} style={{ width: "100%", height: "100%", ...style }}>
+      <img
+        src={src}
+        alt={field.alt || "field-image"}
+        style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
+      />
+    </div>
+  );
 }

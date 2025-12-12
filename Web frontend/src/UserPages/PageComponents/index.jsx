@@ -1,25 +1,22 @@
 // src/UserPages/PageComponents/index.jsx
 import FieldText from "./TextField.jsx";
-// stubs (si luego implementas, descomenta e importa)
 import FieldImage from "./FieldImage.jsx";
 import FieldLink from "./FieldLink.jsx";
 import FieldPhone from "./FieldPhone.jsx";
+import FieldEmail from "./FieldEmail.jsx"; // opcional, si pegaste el archivo
 
-/**
- * Simple mapping. Keys must match exactly the strings used in PersonalPage FIELD_TYPES.
- * If unimplemented, map value is null and PersonalPage will show a placeholder.
- */
 const COMPONENT_MAP = {
   "Text field": FieldText,
-  "Image field": null,
-  "Link field": null,
-  "Phone number": null,
-
-  // alternative keys (tolerance)
+  "Image field": FieldImage,
+  "Link field": FieldLink,
+  "Phone number": FieldPhone,
+  "Email": FieldEmail, // opcional - name exacta si la usas
+  // tolerancia
   TEXT: FieldText,
-  IMAGE: null,
-  LINK: null,
-  PHONE: null,
+  IMAGE: FieldImage,
+  LINK: FieldLink,
+  PHONE: FieldPhone,
+  EMAIL: FieldEmail,
 };
 
 export function getFieldComponent(type) {
@@ -28,5 +25,5 @@ export function getFieldComponent(type) {
   return COMPONENT_MAP[t] || COMPONENT_MAP[t.trim()] || null;
 }
 
-export { FieldText };
+export { FieldText, FieldImage, FieldLink, FieldPhone, FieldEmail };
 export default getFieldComponent;

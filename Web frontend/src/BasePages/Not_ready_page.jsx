@@ -1,10 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Not_ready_page.css";
 import hornetConstruction from "./assets/hornet-construction.png";
 
+/**
+ * Module-level flag: persiste mientras el módulo esté cargado.
+ * Si la app usa HMR en desarrollo, este valor puede resetearse dependiendo de la configuración de HMR.
+ */
+let __NotReady_mounted = false;
+
 function NotReady() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Si ya hay una instancia montada, redirigimos (o devolvemos null)
+    if (__NotReady_mounted) {
+      // opcional: redirige a home en vez de renderizar
+      navigate("/");
+      return;
+    }
+
+    // marcar como montado
+    __NotReady_mounted = true;
+
+    // al desmontar, limpiar la bandera
+    return () => {
+      __NotReady_mounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ejecutar solo on mount
+
+  // Si por alguna razón la bandera está a true al entrar, podemos devolver null
+  if (__NotReady_mounted) {
+    return null;
+  }
 
   const handleGoHome = () => {
     navigate("/");

@@ -16,6 +16,7 @@ const FIELD_TYPES = {
   IMAGE: "Image field",
   LINK: "Link field",
   PHONE: "Phone number",
+  EMAIL: "Email",
 };
 
 export default function PersonalPage() {
@@ -47,10 +48,10 @@ export default function PersonalPage() {
       prev.map((f) =>
         f.id === id
           ? {
-              ...f,
-              ...patch,
-              style: { ...(f.style || {}), ...(patch.style || {}) },
-            }
+            ...f,
+            ...patch,
+            style: { ...(f.style || {}), ...(patch.style || {}) },
+          }
           : f
       )
     );
@@ -75,7 +76,11 @@ export default function PersonalPage() {
             ? PROFILE_PLACEHOLDER
             : type === FIELD_TYPES.LINK
               ? "https://example.com"
-              : "+57 300 000 0000",
+              : type === FIELD_TYPES.PHONE
+                ? "+57 300 000 0000"
+                : type === FIELD_TYPES.EMAIL
+                  ? "name@example.com"
+                  : "",
       style: { bold: false, italic: false, size: 16 },
     };
     setFields((prev) => [...prev, newField]);
@@ -161,7 +166,7 @@ export default function PersonalPage() {
 
   function applyEditorSave(patch) {
     if (!selectedField) return;
-    updateField(selectedField.id, { content: patch.content, style: patch.style });
+    updateField(selectedField.id, { ...(patch || {}) });
     setEditorOpen(false);
     setSelectedField(null);
   }
@@ -230,6 +235,7 @@ export default function PersonalPage() {
               <button type="button" onClick={() => addField(FIELD_TYPES.IMAGE)} className="profiles-panel-button">Image field</button>
               <button type="button" onClick={() => addField(FIELD_TYPES.LINK)} className="profiles-panel-button">Link field</button>
               <button type="button" onClick={() => addField(FIELD_TYPES.PHONE)} className="profiles-panel-button">Phone number</button>
+              <button type="button" onClick={() => addField(FIELD_TYPES.EMAIL)} className="profiles-panel-button">Email field</button>
             </div>
           </div>
 
