@@ -24,7 +24,7 @@ Contiene la lógica de la aplicación y los casos de uso.
 - **services/**: Implementa la lógica de negocio, orquestando las operaciones entre el dominio y la infraestructura.
 
 #### 3. domain/ (Capa de Dominio)
-Representa el núcleo del negocio, independiente de frameworks y tecnologías externas.
+Contiene la lógica del negocio.
 - **user/**: Contiene entidades y definiciones relacionadas con el dominio de usuario.
 
 #### 4. infrastructure/ (Capa de Infraestructura)
@@ -33,34 +33,26 @@ Maneja la persistencia de datos y la comunicación con servicios externos.
 - **repositories/**: Implementación del patrón repositorio para el acceso a datos (CRUD).
 
 #### 5. core/ (Núcleo)
-Contiene configuraciones globales y utilidades.
-- **config.py** (implícito): Configuraciones de entorno.
-- **db.py**: Configuración de conexión a base de datos.
+Contiene el punto de entrada de la aplicación FastAPI, y utilidades.
 - **main.py**: Punto de entrada de la aplicación FastAPI.
-- *Nota: `models.py` y `schema.py` en esta carpeta están marcados como deprecados, favor de usar las definiciones en `infrastructure` y `api/schemas` respectivamente.*
+- **security.py**: Implementación de JWT con jose para la creación de Tokens de sesión.
 
 #### 6. tests/
 Contiene las pruebas automatizadas (unitarias e integración) para asegurar la calidad del código.
 
 
-## Filosofía de Arquitectura (Clean Architecture)
+## Clean Architecture
 
-Este proyecto sigue los principios de **Clean Architecture** (Arquitectura Limpia), lo que implica una separación estricta de responsabilidades y un flujo de dependencias controlado.
+Este proyecto sigue los principios de Clean Architecture lo que implica una separación estricta de responsabilidades y un flujo de dependencias controlado.
 
 ### ¿Qué implica esta estructura?
 
-1.  **Independencia de Frameworks**: La lógica de negocio (Dominio y Aplicación) no depende de bibliotecas externas ni del framework web (FastAPI). Esto permite cambiar herramientas externas con mínimo impacto en las reglas de negocio.
+1.  **Independencia de Frameworks**: La lógica de negocio (Dominio y Aplicación) no tiene dependencias externas. Esto permite cambiar herramientas externas con mínimo impacto en las reglas de negocio.
 2.  **Regla de Dependencia**: Las dependencias solo apuntan "hacia adentro".
     *   `api` -> `application` -> `domain`
     *   `infrastructure` -> `application` / `domain`
     *   El `domain` no sabe nada de las capas exteriores.
-3.  **Testabilidad**: Al desacoplar la lógica de la infraestructura (base de datos, API), es mucho más fácil escribir pruebas unitarias para las reglas de negocio sin necesidad de mocks complejos o bases de datos reales.
-
-### ¿Por qué se usa en este proyecto?
-
-*   **Mantenibilidad**: Facilita la navegación y comprensión del código al tener lugares predecibles para cada tipo de lógica.
-*   **Escalabilidad**: Permite que el equipo trabaje en diferentes capas sin interferir constantemente entre sí.
-*   **Evolución**: Si en el futuro se decide cambiar MySQL por otra DB o FastAPI por otro framework, la lógica central del negocio permanecerá intacta.
+3.  **Testeabilidad**: Al no tener una lógica monolítica, es mucho más fácil escribir pruebas unitarias para las reglas de negocio sin necesidad de mocks complejos o desplegar todo para hacer pruebas.
 
 
 # Requisitos de ejecución  

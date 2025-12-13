@@ -8,7 +8,7 @@
 - Manuel Felipe Espinosa Español  
 - Juan Esteban Ruiz Guasca  
 - Camilo Trujillo Garzón  
-- Cristian Felipe Ramírez Montenegro  
+- Cristian Camilo García Palacios
 
 ## Lecturer  
 **Carlos Andrés Sierra Virgüez**
@@ -29,7 +29,8 @@ Weaver/
 │ ├── Workshop-2/
 │ ├── Workshop-3/
 │ └── Workshop-4/
-└── src/
+└── python-backend/
+└── web-frontend/
 ```
 ---
 
